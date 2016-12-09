@@ -1,0 +1,24 @@
+include MANIFEST.in
+include setup.py
+include *.txt
+include *.rst
+include *.ini
+include *.cmd
+include .bumversion.cfg
+include .coveragerc
+include .pylintrc
+include docs/Makefile
+recursive-include click_configfile *.py
+recursive-include docs     *.py *.rst *.txt *.css *.json *.in make.bat
+recursive-include tests    *.txt *.py *.ini
+recursive-include bin      *.py *.cmd *.zip
+recursive-include tasks/   *.py
+
+# MAYBE: include bin/behave
+# MAYBE: recursive-include features  *.feature *.py *.txt
+# MAYBE: recursive-include lib      *.py *.pth *.zip *.egg
+
+recursive-exclude .git *.*
+recursive-exclude .tox *.*
+recursive-exclude .venv* *.*
+

@@ -1,0 +1,23 @@
+# ============================================================================
+# PYTHON PACKAGE: DEVELOPMENT REQUIREMENTS
+# ============================================================================
+# REQUIRES: Python >= 2.6
+# DESCRIPTION:
+#    pip install -r <THIS_FILE>
+#
+# DETAILS:
+#   invoke    -- Used as build tool.
+#   py.test   -- Used as (doctest) test runner.
+#   coverage  -- Used for python code coverage.
+# ============================================================================
+# INDIRECTLY: virtualenv >= 1.10
+
+# -- BUILD SUPPORT:
+invoke  >= 0.14.0
+bumpversion >= 0.4.0
+
+# -- TEST/DEVELOP SUPPORT:
+-r testing.txt
+
+# -- DOCUMENTATION:
+Sphinx >= 1.5

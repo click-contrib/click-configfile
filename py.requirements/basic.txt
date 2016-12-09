@@ -1,0 +1,14 @@
+# ============================================================================
+# PYTHON PACKAGE REQUIREMENTS
+# ============================================================================
+# REQUIRES: Python >= 2.6
+# DESCRIPTION:
+#    pip install -r <THIS_FILE>
+# ============================================================================
+
+click >= 6.6
+six
+
+# -- USE BACKPORT: For Python2 and some Python3
+# IMPROVED: configparser from Python 3.5
+configparser >= 3.5.0; python_version < '3.5'
