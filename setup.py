@@ -6,6 +6,7 @@ USAGE:
     python setup.py install
 """
 
+from __future__ import print_function
 import sys
 import os.path
 
@@ -15,6 +16,7 @@ HERE = os.curdir
 sys.path.insert(0, HERE)
 
 from setuptools import find_packages, setup
+import inspect
 # MAYBE: from setuptools_behave import behave_test
 
 # -----------------------------------------------------------------------------
@@ -30,20 +32,50 @@ def find_packages_by_root_package(where):
     packages.insert(0, root_package)
     return packages
 
+def make_long_description(marker=None, intro=None):
+    """
+    This package extends the click_ functionality by adding support for commands
+    that use configuration files.
+
+    .. _click: https://click.pocoo.org/
+
+
+    .. code-block:: python
+
+        # EXAMPLE:
+    """
+    if intro is None:
+        intro = inspect.getdoc(make_long_description)
+
+    with open("README.rst", "r") as infile:
+        line = infile.readline()
+        while not line.strip().startswith(marker):
+            line = infile.readline()
+
+        # -- COLLECT REMAINING: Usage example
+        contents = infile.read()
+
+    text = intro +"\n" + contents
+    return text
+
+# -- FILE: example_command_with_configfile.py (ALL PARTS: simplified)
 
 # ----------------------------------------------------------------------------
 # PROJECT CONFIGURATION (for sdist/setup mostly):
 # ----------------------------------------------------------------------------
-install_requires = [ "click >= 6.6" ]
+install_requires = ["click >= 6.6", "six >= 1.10"]
 before_py35_extra = []
 if sys.version < "3.5":
-    install_requires.append("configparser")
-    before_py35_extra.append("configparser")
+    install_requires.append("configparser >= 3.5.0")
+    before_py35_extra.append("configparser >= 3.5.0")
 
-README = os.path.join(HERE, "README.rst")
-long_description = "".join(open(README).readlines()[4:])
+EXAMPLE_MARKER = "# MARKER-EXAMPLE:"
+long_description = make_long_description(EXAMPLE_MARKER)
+SETUP_DEBUG = os.environ.get("SETUP_DEBUG", "no") in ("yes", "true", "on")
+if SETUP_DEBUG:
+    print(long_description)
 
-NAME = "click-configfile"
+
 CLASSIFIERS = """\
 License :: OSI Approved :: BSD License
 Development Status :: 3 - Alpha
@@ -82,8 +114,10 @@ that use configuration files.""",
     platforms  = [ 'any' ],
     classifiers= CLASSIFIERS.splitlines(),
     # packages = find_packages_by_root_package("click_configfile"),
-    modules = ["click_configfile"],
+    py_modules = ["click_configfile"],
     install_requires=install_requires,
+    setup_requires=["pytest-runner"],
+    tests_require=["pytest >= 3.0"],
     include_package_data=True,
     extras_require={
         # -- SUPPORT-WHEELS: Extra packages for Python2.6

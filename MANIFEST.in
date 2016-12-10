@@ -1,23 +1,29 @@
 include MANIFEST.in
+include LICENSE
 include setup.py
 include *.txt
 include *.rst
 include *.ini
-include *.cmd
-include .bumversion.cfg
+include .bumpversion.cfg
 include .coveragerc
 include .pylintrc
-include docs/Makefile
-recursive-include click_configfile *.py
-recursive-include docs     *.py *.rst *.txt *.css *.json *.in make.bat
-recursive-include tests    *.txt *.py *.ini
-recursive-include bin      *.py *.cmd *.zip
-recursive-include tasks/   *.py
 
+recursive-include tests    *.txt *.py *.ini
+recursive-include tasks    *.py  *.txt *.rst
+recursive-include py.requirements   *.txt
+# MAYBE: recursive-include tasks/   *.py *.zip
+
+# include click_configfile.py
+# PREPARED: recursive-include click_configfile *.py
+# PREPARED: include *.cmd
+# PREPARED: recursive-include bin      *.py *.cmd *.zip
+# PREPARED: recursive-include docs     *.py *.rst *.txt *.css *.json *.in make.bat
+# PREPARED: include docs/Makefile
 # MAYBE: include bin/behave
 # MAYBE: recursive-include features  *.feature *.py *.txt
 # MAYBE: recursive-include lib      *.py *.pth *.zip *.egg
 
+recursive-exclude _* *.*
 recursive-exclude .git *.*
 recursive-exclude .tox *.*
 recursive-exclude .venv* *.*

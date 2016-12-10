@@ -160,6 +160,7 @@ The resulting source code is:
 
 .. code-block:: python
 
+    # MARKER-EXAMPLE:
     # -- FILE: example_command_with_configfile.py (ALL PARTS: simplified)
     from click_configfile import ConfigFileReader, Param, SectionSchema
     from click_configfile import matches_section
