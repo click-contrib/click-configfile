@@ -10,9 +10,11 @@ that use configuration files.
 .. _click: https://click.pocoo.org/
 
 
-EXAMPLE::
+EXAMPLE:
 
-    # -- FILE: *.py
+.. code-block:: python
+
+    # -- FILE: example_command_with_configfile.py (PART 1)
     # BASIC SOLUTION FOR: Command that uses one or more configuration files.
     import click
 
@@ -40,9 +42,11 @@ before the command-line parsing begins.
 In addition, there should be a simple way to specify the configuration schema
 in the configuration file in a similar way like the command-line options.
 An example how this functionality may look like, is shown in the following
-code snippet::
+code snippet:
 
-    # -- FILE: *.py
+.. code-block:: python
+
+    # -- FILE: example_command_with_configfile.py (PART 2)
     # Description of sections in a confguration file: *.ini
     from click_configfile import matches_section, Param, SectionSchema
 
@@ -72,6 +76,8 @@ The example shows that the ``Param`` class supports similar arguments like a
 
 An example for a valid configuration file with this schema is::
 
+.. code-block:: ini
+
     # -- FILE: foo.ini
     [foo]
     flag = yes      # -- SUPPORTS: true, false, yes, no (case-insensitive)
@@ -90,9 +96,11 @@ An example for a valid configuration file with this schema is::
 
 
 The following code snippet shows the remaing core implementation of reading
-the configuration file (and parsing the configuration file data)::
+the configuration file (and parsing the configuration file data):
 
-    # -- FILE: *.py
+.. code-block:: python
+
+    # -- FILE: example_command_with_configfile.py (PART 3)
     import configparser     # HINT: Use backport for Python2
     from click_configparser import generate_configfile_names, \
         select_config_sections, parse_config_section
@@ -148,10 +156,11 @@ the configuration file (and parsing the configuration file data)::
 The source code snippet above already contains a large number of generic
 functionality. Most of it can be avoided for processing a specific
 configuration file by using the ``ConfigFileReader`` class.
+The resulting source code is:
 
-The resulting source code is::
+.. code-block:: python
 
-    # -- FILE: hello_command.py
+    # -- FILE: example_command_with_configfile.py (ALL PARTS: simplified)
     from click_configfile import ConfigFileReader, Param, SectionSchema
     from click_configfile import matches_section
     import click
