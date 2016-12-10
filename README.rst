@@ -74,7 +74,7 @@ The example shows that the ``Param`` class supports similar arguments like a
 * a ``multiple`` flag that is used for sequences of a type
 * an optional ``default`` value (if needed or used as type hint)
 
-An example for a valid configuration file with this schema is::
+An example for a valid configuration file with this schema is:
 
 .. code-block:: INI
 
