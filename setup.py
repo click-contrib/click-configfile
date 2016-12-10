@@ -45,12 +45,12 @@ long_description = "".join(open(README).readlines()[4:])
 
 NAME = "click-configfile"
 CLASSIFIERS = """\
-Development Status :: 4 - Beta
+License :: OSI Approved :: BSD License
+Development Status :: 3 - Alpha
 Environment :: Console
 Intended Audience :: Developers
 Intended Audience :: End Users/Desktop
 Intended Audience :: System Administrators
-License :: OSI Approved :: BSD License
 Natural Language :: English
 Programming Language :: Python
 Programming Language :: Python :: 2

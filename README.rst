@@ -1,13 +1,13 @@
 Configuration File Support for Click Commands
 ===============================================================================
 
-`click`_ is a Python package for creating beautiful command line interfaces
+click_ is a Python package for creating beautiful command line interfaces
 in a composable way with as little code as necessary.
 
-This package extends the `click`_ functionality by adding support for commands
+This package extends the click_ functionality by adding support for commands
 that use configuration files.
 
-.. _click:: http://click.pocoo.org/
+.. _click: https://click.pocoo.org/
 
 
 EXAMPLE::
@@ -66,7 +66,7 @@ code snippet::
 The example shows that the ``Param`` class supports similar arguments like a
 ``click.Option``. You can specify:
 
-* a ``type`` (converter), like in `click`_ options
+* a ``type`` (converter), like in click_ options
 * a ``multiple`` flag that is used for sequences of a type
 * an optional ``default`` value (if needed or used as type hint)
 
@@ -199,15 +199,7 @@ The resulting source code is::
     def command_with_config(ctx, numbers):
         # -- ACCESS ADDITIONAL DATA FROM CONFIG FILES: Using ctx.default_map
         for person_data_key in ctx.default_map.keys():
-            if not person_storage_name.startswith("person."):
+            if not person_data_key.startswith("person."):
                 continue
             person_data = ctx.default_map[person_data_key]
             process_person_data(person_data)    # as dict.
-
-
-
-.. hidden:
-
-    http://click.pocoo.org/
-    https://github.com/pallets/click
-    https://pypi.python.org/pypi/click/
