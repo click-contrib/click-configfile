@@ -21,3 +21,9 @@ bumpversion >= 0.4.0
 
 # -- DOCUMENTATION:
 Sphinx >= 1.5
+
+# -- STATIC CODE ANALYSIS:
+pylint
+
+# -- py2/py3 support:
+python-modernize
