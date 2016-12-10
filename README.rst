@@ -76,7 +76,7 @@ The example shows that the ``Param`` class supports similar arguments like a
 
 An example for a valid configuration file with this schema is::
 
-.. code-block:: ini
+.. code-block:: INI
 
     # -- FILE: foo.ini
     [foo]
