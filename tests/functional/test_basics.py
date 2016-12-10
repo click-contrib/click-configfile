@@ -60,14 +60,14 @@ class ConfigFileProcessor1(ConfigFileReader):
 # @pytest.fixture
 # def runner2():
 #     return CliRunner()
-
-xfail = pytest.mark.xfail
-
+#
 # -----------------------------------------------------------------------------
 # TEST SUITE
 # -----------------------------------------------------------------------------
+xfail = pytest.mark.xfail
+
 class TestBasics(object):
-    def test_without_configfile__uses_defaults_from_cmdline(self, isolated_runner):
+    def test_without_configfile__uses_defaults_from_cmdline(self, cli_runner):
         CONTEXT_SETTINGS = dict(default_map=ConfigFileProcessor1.read_config())
         @click.command(context_settings=CONTEXT_SETTINGS)
         @click.option("-n", "--name", default="__CMDLINE__")
@@ -75,11 +75,11 @@ class TestBasics(object):
             click.echo("Hello %s" % name)
 
         assert not os.path.exists("hello.ini")
-        result = isolated_runner.invoke(hello)
+        result = cli_runner.invoke(hello)
         assert result.exit_code == 0
         assert result.output == "Hello __CMDLINE__\n"
 
-    def test_with_cmdline_and_configfile__prefers_cmdline(self, isolated_runner):
+    def test_with_cmdline_and_configfile__prefers_cmdline(self, cli_runner_isolated):
         assert ConfigFileProcessor1.config_files[0] == "hello.ini"
         CONFIG_FILE_CONTENTS1 = """
             [hello]
@@ -95,11 +95,11 @@ class TestBasics(object):
         def hello(name):
             click.echo("Hello %s" % name)
 
-        result = isolated_runner.invoke(hello, ["--name", "CMDLINE_VALUE"])
+        result = cli_runner_isolated.invoke(hello, ["--name", "CMDLINE_VALUE"])
         assert result.exit_code == 0
         assert result.output == "Hello CMDLINE_VALUE\n"
 
-    def test_with_configfile1__preferred_over_cmdline_defaults(self, isolated_runner):
+    def test_with_configfile1__preferred_over_cmdline_defaults(self, cli_runner_isolated):
         assert ConfigFileProcessor1.config_files[0] == "hello.ini"
         CONFIG_FILE_CONTENTS1 = """
             [hello]
@@ -116,11 +116,11 @@ class TestBasics(object):
             click.echo("Hello %s" % name)
 
         assert os.path.exists("hello.ini")
-        result = isolated_runner.invoke(hello)
+        result = cli_runner_isolated.invoke(hello)
         assert result.exit_code == 0
         assert result.output == "Hello Alice\n"
 
-    def test_with_configfile2__usable_as_alternative(self, isolated_runner):
+    def test_with_configfile2__usable_as_alternative(self, cli_runner_isolated):
         assert ConfigFileProcessor1.config_files[1] == "hello.cfg"
         CONFIG_FILE_CONTENTS2 = """
             [hello]
@@ -136,11 +136,11 @@ class TestBasics(object):
         def hello(name):
             click.echo("Hello %s" % name)
 
-        result = isolated_runner.invoke(hello)
+        result = cli_runner_isolated.invoke(hello)
         assert result.exit_code == 0
         assert result.output == "Hello Bob\n"
 
-    def test_with_configfile12__prefers_configfile1(self, isolated_runner):
+    def test_with_configfile12__prefers_configfile1(self, cli_runner_isolated):
         assert ConfigFileProcessor1.config_files == ["hello.ini", "hello.cfg"]
         CONFIG_FILE_CONTENTS1 = """
             [hello]
@@ -161,12 +161,11 @@ class TestBasics(object):
         def hello(name):
             click.echo("Hello %s" % name)
 
-        result = isolated_runner.invoke(hello)
+        result = cli_runner_isolated.invoke(hello)
         assert result.exit_code == 0
         assert result.output == "Hello alice\n"
 
-    # @xfail
-    def test_configfile__can_pass_additional_params_in_context(self, isolated_runner):
+    def test_configfile__can_pass_additional_params_in_context(self, cli_runner_isolated):
         assert ConfigFileProcessor1.config_files[0] == "hello.ini"
         assert not os.path.exists("hello.cfg")
         CONFIG_FILE_CONTENTS = """
@@ -192,7 +191,7 @@ class TestBasics(object):
             click.echo("bar.numbers: %s" % repr(ctx.default_map["bar"]["numbers"]))
 
         assert os.path.exists("hello.ini")
-        result = isolated_runner.invoke(hello)
+        result = cli_runner_isolated.invoke(hello)
         expected_output = """\
 Hello Alice
 foo.numbers: [1, 2, 3]
