@@ -1,14 +1,16 @@
 # -*- coding: UTF-8 -*-
 """
-This module provides some helpers to read configuration files with commands
-that already use click (for command-line processing).
+This module provides functionality to read configuration files with commands
+that already use `click`_ for command-line processing.
 
+.. _click:: http://click.pocoo.org/
 """
 
 from __future__ import absolute_import, print_function
 from fnmatch import fnmatch
 import os.path
 import inspect
+import configparser     # -- USE BACKPORT FOR: Python2
 from click.types import convert_type
 import six
 
@@ -46,24 +48,104 @@ def matches_section(section_name):
     section_names = section_name
     if isinstance(section_name, six.string_types):
         section_names = [section_name]
+    elif not isinstance(section_name, list):
+        raise ValueError("%r (expected: string, strings)" % section_name)
 
     def decorator(cls):
         # pylint: disable=protected-access
-        _section_names = getattr(cls, "_section_names", None)
-        if _section_names is None:
-            cls._section_names = list(section_names)
+        class_section_names = getattr(cls, "section_names", None)
+        if class_section_names is None:
+            cls.section_names = list(section_names)
         else:
-            cls._section_names.extend(section_names)
+            for name in section_names:
+                if name not in cls.section_names:
+                    cls.section_names.append(name)
         return cls
     return decorator
 
+
+def assign_param_names(cls=None, param_class=None):
+    """Class decorator to assign parameter name to instances of :class:`Param`.
+
+    .. sourcecode::
+
+        @assign_param_names
+        class ConfigSectionSchema(object):
+            alice = Param(type=str)
+            bob   = Param(type=str)
+
+        assert ConfigSectionSchema.alice.name == "alice"
+        assert ConfigSectionSchema.bob.name == "bob"
+
+    .. sourcecode::
+
+        # -- NESTED ASSIGN: Covers also nested SectionSchema subclasses.
+        @assign_param_names
+        class ConfigSectionSchema(object):
+            class Foo(SectionSchema):
+                alice = Param(type=str)
+                bob   = Param(type=str)
+
+        assert ConfigSectionSchema.Foo.alice.name == "alice"
+        assert ConfigSectionSchema.Foo.bob.name == "bob"
+    """
+    if param_class is None:
+        param_class = Param
+
+    def decorate_class(cls):
+        # predicate = lambda value: isinstance(value, param_class)
+        for name, value in inspect.getmembers(cls):
+            if name.startswith("__") or value is None:
+                continue
+            elif inspect.isclass(value):
+                # -- NESTED CLASS: Maybe a SectionSchema subclass.
+                decorate_class(value)
+                continue
+            elif not isinstance(value, param_class):
+                continue
+
+            # -- ANNOTATE PARAM: By assigning its name
+            if not value.name:
+                value.name = name
+        return cls
+
+    # -- DECORATOR LOGIC:
+    if cls is None:
+        # -- CASE: @assign_param_names
+        # -- CASE: @assign_param_names()
+        return decorate_class
+    else:
+        # -- CASE: @assign_param_names class X: ...
+        # -- CASE: assign_param_names(my_class)
+        # -- CASE: my_class = assign_param_names(my_class)
+        return decorate_class(cls)
 
 # -----------------------------------------------------------------------------
 # CONFIG SECTION SCHEMA DESCRIPTION
 # -----------------------------------------------------------------------------
 class SectionSchema(object):
-    """Marker for configuration section schema classes (syntactic sugar)."""
-    pass
+    """Marker for configuration section schema classes."""
+    # -- ONLY IN DERIVED CLASSES:
+    # section_names = []  # Section names (or patterns) to apply SectionSchema.
+
+    @classmethod
+    def matches_section(cls, section_name, supported_section_names=None):
+        """Indicates if this schema can be used for a config section
+        by using the section name.
+
+        :param section_name:    Config section name to check.
+        :return: True, if this schema can be applied to the config section.
+        :return: Fals, if this schema does not match the config section.
+        """
+        if supported_section_names is None:
+            supported_section_names = getattr(cls, "section_names", None)
+
+        for supported_section_name_or_pattern in supported_section_names:
+            if fnmatch(section_name, supported_section_name_or_pattern):
+                return True
+        # -- OTHERWISE:
+        return False
+
 
 
 class Param(object):
@@ -73,11 +155,11 @@ class Param(object):
 
     .. sourcecode::
 
-            class FooSchema(SectionSchema):
-                name    = Param(type=str)
-                flag    = Param(type=bool, default=True)
-                numbers = Param(type=int, multiple=True)
-                filenames = Param(type=click.Path(), multiple=True)
+        class FooSchema(SectionSchema):
+            name    = Param(type=str)
+            flag    = Param(type=bool, default=True)
+            numbers = Param(type=int, multiple=True)
+            filenames = Param(type=click.Path(), multiple=True)
 
     .. sourcecode:: ini
 
@@ -88,8 +170,6 @@ class Param(object):
         numbers = 1 4 9 16 25
         filenames = foo/xxx.txt
             bar/baz/zzz.txt
-
-    .. todo:: NICE TO HAVE: Auto-discover name from stack.
     """
     # pylint: disable=redefined-builtin
     def __init__(self, name=None, type=None, multiple=None, default=None):
@@ -162,7 +242,6 @@ def parse_config_section(config_section, section_schema):
     :return: Retrieved data, values converted to described types.
     :raises: click.BadParameter, if conversion error occurs.
     """
-    # print("config_section: %s" % config_section.name)
     storage = {}
     for name, param in select_params_from_section_schema(section_schema):
         value = config_section.get(name, None)
@@ -173,7 +252,7 @@ def parse_config_section(config_section, section_schema):
         else:
             value = param.parse(value)
         # -- DIAGNOSTICS:
-        print("  %s = %s" % (name, repr(value)))
+        # print("  %s = %s" % (name, repr(value)))
         storage[name] = value
     return storage
 
@@ -225,3 +304,169 @@ def select_config_sections(configfile_sections, desired_section_patterns):
             if fnmatch(section_name, desired_section_pattern):
                 yield section_name
 
+
+# -----------------------------------------------------------------------------
+# BOILER-PLATE FOR CONFIG-FILE READER
+# -----------------------------------------------------------------------------
+class ConfigFileReader(object):
+    """Generic configuration file reader.
+    Concrete configuration file reader class must extend it and specify the
+    concrete details.
+
+    EXAMPLE:
+
+    .. sourcecode::
+
+        # -- FILE: hello_command.py
+        from click_configfile import ConfigFileReader, Param, SectionSchema
+        from click_configfile import matches_section
+
+        class ConfigSectionSchema(object):
+
+            @matches_section("hello")
+            class Hello(SectionSchema):
+                name = Param(type=str)
+
+            @matches_section("hello.more.*")
+            class HelloMore(SectionSchema):
+                numbers = Param(type=int, multiple=True)
+
+        class ConfigFileProcessor(ConfigFileReader):
+            config_files = ["hello.ini", "hello.cfg"]
+            config_section_schemas = [
+                ConfigSectionSchema.Hello,     # PRIMARY SCHEMA
+                ConfigSectionSchema.HelloMore,
+            ]
+
+            @classmethod
+            def get_storage_name_for(cls, section_name):
+                if section_name == "hello":
+                    return ""   # -- MERGE-INTO-STORAGE
+                elif section_name.startswith("hello.more."):
+                    # -- EXAMPLE:  hello.more.alice  ->  alice
+                    return section_name.replace("hello.more.", "", 1)
+                # -- OTHERWISE: Delegate to BaseClass
+                return ConfigFileReader.get_storage_name_for(section_name)
+                # OR: raise LookupError(section_name)
+
+
+        # -- COMMANDS:
+        CONTEXT_SETTINGS = dict(default_map=ConfigFileProcessor.read_config())
+
+        @click.command(context_settings=CONTEXT_SETTINGS)
+        @click.option("-n", "--name", type=str)
+        @click.pass_context
+        def hello(ctx, name):
+            pass
+    """
+    config_files = []               # Config filename variants (basenames).
+    config_section_schemas = []     # Config section schema description.
+    config_sections = []            # OPTIONAL: Config sections of interest.
+    config_searchpath = ["."]       # OPTIONAL: Where to look for config files.
+
+    # -- GENERIC PART:
+    # Uses declarative specification from above (config_files, config_sections, ...)
+    @classmethod
+    def read_config(cls):
+        configfile_names = list(
+            generate_configfile_names(cls.config_files))
+        parser = configparser.ConfigParser()
+        parser.optionxform = str
+        parser.read(configfile_names)
+
+        if not cls.config_sections:
+            # -- AUTO-DISCOVER (once): From cls.config_section_schemas
+            cls.config_sections = cls.collect_config_sections_from_schemas(
+                                            cls.config_section_schemas)
+
+        storage = {}
+        for section_name in select_config_sections(parser.sections(),
+                                                   cls.config_sections):
+            # print("PROCESS-SECTION: %s" % section_name)
+            config_section = parser[section_name]
+            cls.process_config_section(config_section, storage)
+        return storage
+
+    @classmethod
+    def collect_config_sections_from_schemas(cls, config_section_schemas):
+        collected = []
+        for schema in config_section_schemas:
+            collected.extend(schema.section_names)
+            # -- MAYBE BETTER:
+            # for name in schema.section_names:
+            #    if name not in collected:
+            #        collected.append(name)
+        return collected
+
+    # -- SPECIFIC PART:
+    # Specifies which schema to use and where data should be stored.
+    @classmethod
+    def process_config_section(cls, config_section, storage):
+        """Process the config section and store the extracted data in
+        the param:`storage` (as outgoing param).
+        """
+        # -- CONCEPT:
+        # if not storage:
+        #     # -- INIT DATA: With default parts.
+        #     storage.update(dict(_PERSONS={}))
+
+        schema = cls.select_config_schema_for(config_section.name)
+        if not schema:
+            message = "No schema found for: section=%s"
+            raise LookupError(message % config_section.name)
+
+        # -- PARSE AND STORE CONFIG SECTION:
+        section_storage = cls.select_storage_for(config_section.name, storage)
+        section_data = parse_config_section(config_section, schema)
+        section_storage.update(section_data)
+
+    @classmethod
+    def select_config_schema_for(cls, section_name):
+        """Select the config schema that matches the config section (by name).
+
+        :param section_name:    Config section name (as key).
+        :return: Config section schmema to use (subclass of: SectionSchema).
+        """
+        for section_schema in cls.config_section_schemas:
+            matches_section = getattr(section_schema, "matches_section", None)
+            if matches_section is None:
+                matches_section = lambda name: SectionSchema.matches_section(
+                    name, section_schema.section_names)
+
+            if matches_section(section_name):
+                return section_schema
+        return None
+
+    @classmethod
+    def get_storage_name_for(cls, section_name):
+        """Selects where to store the retrieved data from the config section.
+
+        :param section_name:    Config section name to process (as string).
+        :return: EMPTY-STRING or None, indicates MERGE-WITH-DEFAULTS.
+        :return: NON-EMPTY-STRING, for key in default_map to use.
+        """
+        if cls.config_sections and cls.config_sections[0] == section_name:
+            # -- PRIMARY-SECTION: Merge into storage (defaults_map).
+            return ""
+        else:
+            return section_name
+        # -- MAYBE BETTER:
+        # raise LookupError("Unknown section: %s" % section_name)
+
+    @classmethod
+    def select_storage_for(cls, section_name, storage):
+        """Selects the data storage for a config section within the
+        :param:`storage`. The primary config section is normally merged into
+        the :param:`storage`.
+
+        :param section_name:    Config section (name) to process.
+        :param storage:         Data storage to use.
+        :return: :param:`storage` or a part of it (as section storage).
+        """
+        section_storage = storage
+        storage_name = cls.get_storage_name_for(section_name)
+        if storage_name:
+            section_storage = storage.get(storage_name, None)
+            if section_storage is None:
+                section_storage = storage[storage_name] = dict()
+        return section_storage

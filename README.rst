@@ -7,6 +7,9 @@ in a composable way with as little code as necessary.
 This package extends the `click`_ functionality by adding support for commands
 that use configuration files.
 
+.. _click:: http://click.pocoo.org/
+
+
 EXAMPLE::
 
     # -- FILE: *.py
@@ -97,6 +100,10 @@ the configuration file (and parsing the configuration file data)::
     class ConfigFileProcessor(object):
         config_files = ["foo.ini", "foo.cfg"]   # Config filename variants.
         config_sections = ["foo", "person.*"]   # Sections of interest.
+        config_section_schemas = [
+            ConfigSectionSchema.Foo,
+            ConfigSectionSchema.Person,
+        ]
 
         # -- GENERIC PART:
         # Uses declarative specification from above (config_files, config_sections, ...)
@@ -138,7 +145,66 @@ the configuration file (and parsing the configuration file data)::
             # -- HINT: Ignore unknown section for extensibility reasons.
 
 
-.. _click:: http://click.pocoo.org/
+The source code snippet above already contains a large number of generic
+functionality. Most of it can be avoided for processing a specific
+configuration file by using the ``ConfigFileReader`` class.
+
+The resulting source code is::
+
+    # -- FILE: hello_command.py
+    from click_configfile import ConfigFileReader, Param, SectionSchema
+    from click_configfile import matches_section
+    import click
+
+    class ConfigSectionSchema(object):
+        """Describes all config sections of this configuration file."""
+
+        @matches_section("foo")
+        class Foo(SectionSchema):
+            name    = Param(type=str)
+            flag    = Param(type=bool, default=True)
+            numbers = Param(type=int, multiple=True)
+            filenames = Param(type=click.Path(), multiple=True)
+
+        @matches_section("person.*")   # Matches multiple sections
+        class Person(SectionSchema):
+            name      = Param(type=str)
+            birthyear = Param(type=click.IntRange(1990, 2100))
+
+
+    class ConfigFileProcessor(ConfigFileReader):
+        config_files = ["foo.ini", "foo.cfg"]
+        config_section_schemas = [
+            ConfigSectionSchema.Foo,     # PRIMARY SCHEMA
+            ConfigSectionSchema.Person,
+        ]
+
+        # -- SIMPLIFIED STORAGE-SCHEMA (compared to example above):
+        #   section:person.*        -> storage:person.*
+        #   section:person.alice    -> storage:person.alice
+        #   section:person.bob      -> storage:person.bob
+
+        # -- ALTERNATIVES: Override or reimplement
+        # * ConfigFileReader.process_config_section(config_section, storage)
+        # * ConfigFileReader.get_storage_name_for(section_name)
+        # * ConfigFileReader.get_storage_for(section_name, storage)
+
+
+    # -- COMMAND:
+    CONTEXT_SETTINGS = dict(default_map=ConfigFileProcessor.read_config())
+
+    @click.command(context_settings=CONTEXT_SETTINGS)
+    @click.option("-n", "--number", "numbers", type=int, multiple=True)
+    @click.pass_context
+    def command_with_config(ctx, numbers):
+        # -- ACCESS ADDITIONAL DATA FROM CONFIG FILES: Using ctx.default_map
+        for person_data_key in ctx.default_map.keys():
+            if not person_storage_name.startswith("person."):
+                continue
+            person_data = ctx.default_map[person_data_key]
+            process_person_data(person_data)    # as dict.
+
+
 
 .. hidden:
 
