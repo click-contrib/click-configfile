@@ -1,0 +1,8 @@
+run:
+    echo: true
+    pty: true
+
+clean_all:
+    extra_directories:
+      - .eggs
+      - tmp

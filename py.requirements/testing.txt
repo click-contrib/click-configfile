@@ -9,6 +9,7 @@
 
 # -- TEST SUPPORT:
 pytest >= 3.0
+pytest-runner
 pytest-html >= 1.12.0
 coverage >= 4.2
 tox >= 1.8
