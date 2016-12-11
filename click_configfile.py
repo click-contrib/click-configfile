@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+# pylint: disable=missing-docstring, too-few-public-methods
 """
 This module provides functionality to read configuration files with commands
 that already use click_ for command-line processing.
@@ -52,7 +53,6 @@ def matches_section(section_name):
         raise ValueError("%r (expected: string, strings)" % section_name)
 
     def decorator(cls):
-        # pylint: disable=protected-access
         class_section_names = getattr(cls, "section_names", None)
         if class_section_names is None:
             cls.section_names = list(section_names)
@@ -137,6 +137,7 @@ class SectionSchema(object):
         if supported_section_names is None:
             supported_section_names = getattr(cls, "section_names", None)
 
+        # pylint: disable=invalid-name
         for supported_section_name_or_pattern in supported_section_names:
             if fnmatch(section_name, supported_section_name_or_pattern):
                 return True
@@ -169,6 +170,7 @@ class Param(object):
             bar/baz/zzz.txt
     """
     # pylint: disable=redefined-builtin
+
     def __init__(self, name=None, type=None, multiple=None, default=None):
         self.name = name
         self.type = convert_type(type, default)
@@ -201,6 +203,7 @@ def select_params_from_section_schema(section_schema, param_class=Param,
             continue    # pragma: no cover
         elif inspect.isclass(value) and deep:
             # -- CASE: class => SELF-CALL (recursively).
+            # pylint: disable= bad-continuation
             cls = value
             for name, value in select_params_from_section_schema(cls,
                                             param_class=param_class, deep=True):
@@ -390,6 +393,14 @@ class ConfigFileReader(object):
 
     @classmethod
     def collect_config_sections_from_schemas(cls, config_section_schemas=None):
+        # pylint: disable=invalid-name
+        """Derive support config section names from config section schemas.
+        If no :param:`config_section_schemas` are provided, the schemas from
+        this class are used (normally defined in the DerivedClass).
+
+        :param config_section_schemas:  List of config section schema classes.
+        :return: List of config section names or name patterns (as string).
+        """
         if config_section_schemas is None:
             config_section_schemas = cls.config_section_schemas
 
@@ -431,13 +442,15 @@ class ConfigFileReader(object):
         :param section_name:    Config section name (as key).
         :return: Config section schmema to use (subclass of: SectionSchema).
         """
+        # pylint: disable=cell-var-from-loop, redefined-outer-name
         for section_schema in cls.config_section_schemas:
-            matches_section = getattr(section_schema, "matches_section", None)
-            if matches_section is None:
-                matches_section = lambda name: SectionSchema.matches_section(
+            schema_matches = getattr(section_schema, "matches_section", None)
+            if schema_matches is None:
+                # -- OTHER SCHEMA CLASS: Reuse SectionSchema functionality.
+                schema_matches = lambda name: SectionSchema.matches_section(
                     name, section_schema.section_names)
 
-            if matches_section(section_name):
+            if schema_matches(section_name):
                 return section_schema
         return None
 

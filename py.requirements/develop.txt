@@ -26,4 +26,4 @@ Sphinx >= 1.5
 pylint
 
 # -- py2/py3 support:
-python-modernize
+modernize >= 0.5
