@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 -*-
 """
 This module provides functionality to read configuration files with commands
-that already use `click`_ for command-line processing.
+that already use click_ for command-line processing.
 
-.. _click:: http://click.pocoo.org/
+.. _click:  http://click.pocoo.org/
 """
 
 from __future__ import absolute_import, print_function
@@ -48,7 +48,7 @@ def matches_section(section_name):
     section_names = section_name
     if isinstance(section_name, six.string_types):
         section_names = [section_name]
-    elif not isinstance(section_name, list):
+    elif not isinstance(section_name, (list, tuple)):
         raise ValueError("%r (expected: string, strings)" % section_name)
 
     def decorator(cls):
@@ -57,9 +57,15 @@ def matches_section(section_name):
         if class_section_names is None:
             cls.section_names = list(section_names)
         else:
-            for name in section_names:
-                if name not in cls.section_names:
-                    cls.section_names.append(name)
+            # -- BETTER SUPPORT: For multiple decorators
+            #   @matches_section("foo")
+            #   @matches_section("bar.*")
+            #   class Example(SectionSchema):
+            #       pass
+            #   assert Example.section_names == ["foo", "bar.*"]
+            approved = [name for name in section_names
+                        if name not in cls.section_names]
+            cls.section_names = approved + cls.section_names
         return cls
     return decorator
 
@@ -93,17 +99,8 @@ def assign_param_names(cls=None, param_class=None):
         param_class = Param
 
     def decorate_class(cls):
-        # predicate = lambda value: isinstance(value, param_class)
-        for name, value in inspect.getmembers(cls):
-            if name.startswith("__") or value is None:
-                continue
-            elif inspect.isclass(value):
-                # -- NESTED CLASS: Maybe a SectionSchema subclass.
-                decorate_class(value)
-                continue
-            elif not isinstance(value, param_class):
-                continue
-
+        for name, value in select_params_from_section_schema(cls, param_class,
+                                                             deep=True):
             # -- ANNOTATE PARAM: By assigning its name
             if not value.name:
                 value.name = name
@@ -112,7 +109,7 @@ def assign_param_names(cls=None, param_class=None):
     # -- DECORATOR LOGIC:
     if cls is None:
         # -- CASE: @assign_param_names
-        # -- CASE: @assign_param_names()
+        # -- CASE: @assign_param_names(...)
         return decorate_class
     else:
         # -- CASE: @assign_param_names class X: ...
@@ -191,7 +188,8 @@ class Param(object):
 # -----------------------------------------------------------------------------
 # PARSING CONFIG SECTIONS WITH SCHEMA DESCRIPTION
 # -----------------------------------------------------------------------------
-def select_params_from_section_schema(section_schema):
+def select_params_from_section_schema(section_schema, param_class=Param,
+                                      deep=False):
     """Selects the parameters of a config section schema.
 
     :param section_schema:  Configuration file section schema to use.
@@ -199,9 +197,15 @@ def select_params_from_section_schema(section_schema):
     """
     # pylint: disable=invalid-name
     for name, value in inspect.getmembers(section_schema):
-        if name.startswith("_"):
-            continue
-        elif isinstance(value, Param):
+        if name.startswith("__") or value is None:
+            continue    # pragma: no cover
+        elif inspect.isclass(value) and deep:
+            # -- CASE: class => SELF-CALL (recursively).
+            cls = value
+            for name, value in select_params_from_section_schema(cls,
+                                            param_class=param_class, deep=True):
+                yield (name, value)
+        elif isinstance(value, param_class):
             yield (name, value)
 
 
@@ -281,12 +285,10 @@ def generate_configfile_names(config_files, config_searchpath=None):
         config_searchpath = ["."]
 
     for config_path in reversed(config_searchpath):
-        if not os.path.isdir(config_path):
-            continue
-
         for config_basename in reversed(config_files):
             config_fname = os.path.join(config_path, config_basename)
             if os.path.isfile(config_fname):
+                # MAYBE: yield os.path.normpath(config_fname)
                 yield config_fname
 
 
@@ -376,8 +378,7 @@ class ConfigFileReader(object):
 
         if not cls.config_sections:
             # -- AUTO-DISCOVER (once): From cls.config_section_schemas
-            cls.config_sections = cls.collect_config_sections_from_schemas(
-                                            cls.config_section_schemas)
+            cls.config_sections = cls.collect_config_sections_from_schemas()
 
         storage = {}
         for section_name in select_config_sections(parser.sections(),
@@ -388,7 +389,10 @@ class ConfigFileReader(object):
         return storage
 
     @classmethod
-    def collect_config_sections_from_schemas(cls, config_section_schemas):
+    def collect_config_sections_from_schemas(cls, config_section_schemas=None):
+        if config_section_schemas is None:
+            config_section_schemas = cls.config_section_schemas
+
         collected = []
         for schema in config_section_schemas:
             collected.extend(schema.section_names)

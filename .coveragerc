@@ -10,7 +10,7 @@
 [run]
 # append  = .coverage
 source = click_configfile
-branch  = False
+branch  = True
 parallel = True
 
 [report]
