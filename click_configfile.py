@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+# (c) 2016 by Jens Engel
 # pylint: disable=missing-docstring, too-few-public-methods
 """
 This module provides functionality to read configuration files with commands
@@ -14,6 +15,13 @@ import inspect
 import configparser     # -- USE BACKPORT FOR: Python2
 from click.types import convert_type
 import six
+
+# -----------------------------------------------------------------------------
+# PACKAGE META DATA:
+# -----------------------------------------------------------------------------
+__version__ = "0.1.0"
+__author__ = "Jens Engel"
+__license__ = "BSD"
 
 
 # -----------------------------------------------------------------------------
