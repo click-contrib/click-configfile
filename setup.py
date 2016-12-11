@@ -101,7 +101,7 @@ Topic :: Utilities
 # -----------------------------------------------------------------------------
 setup(
     name="click-configfile",
-    version="0.2.0",
+    version="0.3.0a0",
     url="http://pypi.python.org/pypi/click-configfile/",
     author="Jens Engel",
     author_email="jenisys@noreply.github.com",
