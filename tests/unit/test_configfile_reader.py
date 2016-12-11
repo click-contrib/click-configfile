@@ -53,6 +53,49 @@ class TestConfigFileReader(object):
         schema = ConfigFileProcessor.select_config_schema_for("unbounded.section")
         assert schema is None
 
+    @pytest.mark.parametrize("section_name, expected_schema", [
+        # -- SECTION NAME STARTS WITH: foo.*
+        ("foo.alice", "schema1"),
+        ("foo.bob",   "schema1"),
+        # -- SECTION NAME ENDS WITH: *.foo
+        ("some.foo",  "schema2"),
+        ("other.foo", "schema2"),
+        # -- SECTION NAME CONTAINS: *.foo.*
+        ("loo.foo.bar", "schema3"),
+        ("xxx.foo.zzz", "schema3"),
+        # -- UNBOUNDED/UNSUPPORTED: section names
+        ("foo_bar",     None),
+        ("baz_foo",     None),
+        ("xxx_foo_zzz", None),
+    ])
+    def test_select_config_schema_for__with_schema_using_wildcards(self,
+                                                section_name, expected_schema):
+        # -- SETUP:
+        @matches_section("foo.*")
+        class ExampleSchema1(SectionSchema):
+            schema_name = "schema1"
+
+        @matches_section("*.foo")
+        class ExampleSchema2(SectionSchema):
+            schema_name = "schema2"
+
+        @matches_section("*.foo.*")
+        class ExampleSchema3(SectionSchema):
+            schema_name = "schema3"
+
+        class ConfigFileProcessor(ConfigFileReader):
+            config_section_schemas = [
+                ExampleSchema1, ExampleSchema2, ExampleSchema3]
+
+        # -- PERFORM TEST:
+        schema = ConfigFileProcessor.select_config_schema_for(section_name)
+        if expected_schema is None:
+            # -- UNBOUNDED SECTION (not supported; no mapping to schema provided)
+            assert schema is None
+        else:
+            # -- EXPECTED SECTION:
+            assert schema is not None
+            assert schema.schema_name == expected_schema
 
     # -- TESTS FOR: ConfigFileReader.collect_config_sections_from_schemas()
     def test_collect_config_sections_from_schemas__without_arg(self):
