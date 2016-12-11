@@ -5,11 +5,10 @@ Test parameter related functionality.
 
 from __future__ import absolute_import, print_function
 import os.path
+from tests._test_support import write_configfile_with_contents
 from click_configfile import Param, SectionSchema, ConfigFileReader, \
     assign_param_names, matches_section
-from tests._test_support import write_configfile_with_contents
 import click
-import click.core
 import pytest
 
 

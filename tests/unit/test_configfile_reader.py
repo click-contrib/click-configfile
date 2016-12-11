@@ -4,22 +4,11 @@ Unit tests for :class:`click_configfile.ConfigFileReader`.
 """
 
 from __future__ import absolute_import, print_function
-import os.path
+# PREPARED: import os.path
+# PREPARED: from tests._test_support import write_configfile_with_contents
 from click_configfile import Param, SectionSchema, ConfigFileReader
 from click_configfile import matches_section
-from tests._test_support import write_configfile_with_contents
 import pytest
-
-# -----------------------------------------------------------------------------
-# TEST SUPPORT
-# -----------------------------------------------------------------------------
-# def write_configfile_with_contents(filename, contents):
-#     dirname = os.path.dirname(filename) or "."
-#     if not os.path.isdir(dirname):
-#         os.makedirs(dirname)
-#
-#     with open(filename, "w") as config_file:
-#         config_file.write(contents)
 
 
 # -----------------------------------------------------------------------------
@@ -50,8 +39,10 @@ class TestConfigFileReader(object):
         schema = ConfigFileProcessor.select_config_schema_for("foo")
         assert schema is ExampleSchema
 
-    def test_select_config_schema_for__with_unbound_section(self):
-        # -- MEANS: A config section that does not match any schema.
+    def test_select_config_schema_for__with_unbounded_section(self):
+        # -- DEFINITION: unbounded section
+        #    A config section that cannot be mapped to any schema
+        #    but should be processed (due to: ConfigFileReader.config_sections).
         @matches_section("foo")
         class ExampleSchema(object):
             number = Param(type=int)
@@ -59,7 +50,7 @@ class TestConfigFileReader(object):
         class ConfigFileProcessor(ConfigFileReader):
             config_section_schemas = [ExampleSchema]
 
-        schema = ConfigFileProcessor.select_config_schema_for("unbound.section")
+        schema = ConfigFileProcessor.select_config_schema_for("unbounded.section")
         assert schema is None
 
 

@@ -9,6 +9,9 @@ from click_configfile import assign_param_names, matches_section
 import pytest
 
 
+# -----------------------------------------------------------------------------
+# TEST SUITE
+# -----------------------------------------------------------------------------
 class TestDecorators(object):
 
     # -- TESTS RELATED TO: @assign_param_names decorator
@@ -27,7 +30,7 @@ class TestDecorators(object):
         assert ExampleSchema.verbose.name == "verbose"
         assert ExampleSchema.persons.name == "persons"
 
-    def test_assign_param_names__with_any_class(self):
+    def test_assign_param_names__with_other_class(self):
         @assign_param_names
         class ExampleSchema(object):
             person = Param(type=str)
@@ -138,7 +141,7 @@ class TestDecorators(object):
 
         assert Hello.section_names == ["foo", "bar.*"]
 
-    def test_matches_section__with_any_class(self):
+    def test_matches_section__with_other_class(self):
         @matches_section("hello")
         class Hello(object):
             pass

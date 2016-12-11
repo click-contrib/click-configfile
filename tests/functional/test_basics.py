@@ -5,19 +5,11 @@ Test basic functionality
 
 from __future__ import absolute_import, print_function
 import os.path
+from tests._test_support import write_configfile_with_contents
 from click_configfile import Param, SectionSchema, ConfigFileReader, \
     assign_param_names, matches_section
-from tests._test_support import write_configfile_with_contents
 import click
-import click.core
 import pytest
-
-# -----------------------------------------------------------------------------
-# TEST SUPPORT
-# -----------------------------------------------------------------------------
-# def write_configfile_with_contents(filename, contents):
-#     with open(filename, "w") as config_file:
-#         config_file.write(contents)
 
 
 # -----------------------------------------------------------------------------

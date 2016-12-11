@@ -5,20 +5,9 @@ Unit tests for :class:`click_configfile.ConfigFileReader`.
 
 from __future__ import absolute_import, print_function
 import os.path
+from tests._test_support import write_configfile_with_contents
 from click_configfile import generate_configfile_names
 import pytest
-
-
-# -----------------------------------------------------------------------------
-# TEST SUPPORT
-# -----------------------------------------------------------------------------
-def write_configfile_with_contents(filename, contents):
-    dirname = os.path.dirname(filename) or "."
-    if not os.path.isdir(dirname):
-        os.makedirs(dirname)
-
-    with open(filename, "w") as config_file:
-        config_file.write(contents)
 
 
 # -----------------------------------------------------------------------------
