@@ -102,7 +102,8 @@ Topic :: Utilities
 setup(
     name="click-configfile",
     version="0.3.0a0",
-    url="http://pypi.python.org/pypi/click-configfile/",
+    url="https://github.com/jenisys/click-configfile",
+    download_url="https://pypi.python.org/pypi/click-configfile/",
     author="Jens Engel",
     author_email="jenisys@noreply.github.com",
     license="BSD",
@@ -127,4 +128,5 @@ that use configuration files.""",
         ':python_version=="3.3"': before_py35_extra,
         ':python_version=="3.4"': before_py35_extra,
     },
+    zip_safe=True,
 )
