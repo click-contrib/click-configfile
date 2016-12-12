@@ -16,6 +16,9 @@
 invoke  >= 0.14.0
 bumpversion >= 0.4.0
 
+# -- PACKAGE RELEASE MANAGEMENT:
+twine
+
 # -- TEST/DEVELOP SUPPORT:
 -r testing.txt
 
