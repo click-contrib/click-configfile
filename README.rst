@@ -194,15 +194,15 @@ The resulting source code is:
             ConfigSectionSchema.Person,
         ]
 
-        # -- SIMPLIFIED STORAGE-SCHEMA (compared to example above):
+        # -- SIMPLIFIED STORAGE-SCHEMA:
         #   section:person.*        -> storage:person.*
         #   section:person.alice    -> storage:person.alice
         #   section:person.bob      -> storage:person.bob
 
-        # -- ALTERNATIVES: Override or reimplement
-        # * ConfigFileReader.process_config_section(config_section, storage)
-        # * ConfigFileReader.get_storage_name_for(section_name)
-        # * ConfigFileReader.get_storage_for(section_name, storage)
+        # -- ALTERNATIVES: Override ConfigFileReader methods:
+        #  * process_config_section(config_section, storage)
+        #  * get_storage_name_for(section_name)
+        #  * get_storage_for(section_name, storage)
 
 
     # -- COMMAND:
