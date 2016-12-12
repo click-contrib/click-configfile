@@ -34,11 +34,35 @@ def find_packages_by_root_package(where):
 
 def make_long_description(marker=None, intro=None):
     """
-    This package extends the click_ functionality by adding support for commands
-    that use configuration files.
+    click_ is a framework to simplify writing composable commands for
+    command-line tools. This package extends the click_ functionality
+    by adding support for commands that use configuration files.
 
     .. _click: https://click.pocoo.org/
 
+    EXAMPLE:
+
+    A configuration file, like:
+
+    .. code-block:: INI
+
+        # -- FILE: foo.ini
+        [foo]
+        flag = yes
+        name = Alice and Bob
+        numbers = 1 4 9 16 25
+        filenames = foo/xxx.txt
+            bar/baz/zzz.txt
+
+        [person.alice]
+        name = Alice
+        birthyear = 1995
+
+        [person.bob]
+        name = Bob
+        birthyear = 2001
+
+    can be processed with:
 
     .. code-block:: python
 
@@ -63,6 +87,11 @@ def make_long_description(marker=None, intro=None):
 # ----------------------------------------------------------------------------
 # PROJECT CONFIGURATION (for sdist/setup mostly):
 # ----------------------------------------------------------------------------
+package_version = "0.2.0"
+description = """\
+This package extends the `click <https://click.pocoo.org/>`_ functionality
+by adding support for commands that use configuration files."""
+
 install_requires = ["click >= 6.6", "six >= 1.10"]
 before_py35_extra = []
 if sys.version < "3.5":
@@ -89,10 +118,6 @@ Programming Language :: Python :: 2
 Programming Language :: Python :: 2.6
 Programming Language :: Python :: 2.7
 Programming Language :: Python :: 3
-Programming Language :: Python :: 3.3
-Programming Language :: Python :: 3.4
-Programming Language :: Python :: 3.5
-Programming Language :: Python :: 3.6
 Topic :: Utilities
 """
 
@@ -101,15 +126,13 @@ Topic :: Utilities
 # -----------------------------------------------------------------------------
 setup(
     name="click-configfile",
-    version="0.3.0a0",
+    version=package_version,
     url="https://github.com/jenisys/click-configfile",
-    download_url="https://pypi.python.org/pypi/click-configfile/",
+    download_url="https://pypi.python.org/pypi/click-configfile/%s" % package_version,
     author="Jens Engel",
     author_email="jenisys@noreply.github.com",
     license="BSD",
-    description= """\
-This package extends the 'click' functionality by adding support for commands
-that use configuration files.""",
+    description= "This package supports click commands that use configuration files.",
     long_description = long_description,
     keywords   = "click, configfile, configparser",
     platforms  = [ 'any' ],
@@ -117,11 +140,11 @@ that use configuration files.""",
     # packages = find_packages_by_root_package("click_configfile"),
     py_modules = ["click_configfile"],
     install_requires=install_requires,
-    setup_requires=["pytest-runner"],
-    tests_require=["pytest >= 3.0"],
+    # BAD: setup_requires=["pytest-runner"],
+    tests_require=["pytest >= 3.0", "pytest-runner"],
     include_package_data=True,
     extras_require={
-        # -- SUPPORT-WHEELS: Extra packages for Python2.6
+        # -- SUPPORT-WHEELS: Extra packages for Python2.6 and ...
         # SEE: https://bitbucket.org/pypa/wheel/ , CHANGES.txt (v0.24.0)
         ':python_version=="2.6"': before_py35_extra,
         ':python_version=="2.7"': before_py35_extra,
