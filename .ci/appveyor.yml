@@ -40,7 +40,7 @@ init:
 
 install:
   - cmd: "%PYTHON%\\python.exe -m pip install pytest"
-  - cmd: %PYTHON%\python.exe -m pip install .
+  - cmd: "%PYTHON%\\python.exe -m pip install ."
 
 # SINCE: November 01, 2016  ==> pip on path
 # https://www.appveyor.com/updates/
