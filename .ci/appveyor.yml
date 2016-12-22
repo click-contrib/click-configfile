@@ -32,11 +32,11 @@ environment:
 
 init:
   - cmd: echo TESTING-WITH %PYTHON%
-  - cmd: echo INSTALLED PYTHON VERSIONS
-  - cmd: dir C:\Python*
-  - cmd: path
 
 # -- TEMPORARILY DISABLED: Python variants discovery
+#  - cmd: echo INSTALLED PYTHON VERSIONS
+#  - cmd: dir C:\Python*
+#  - cmd: path
 
 install:
   - cmd: "%PYTHON%\\python.exe -m pip install pytest"
@@ -53,10 +53,9 @@ test_script:
 
 # SAD: Uses default python interpreter
 #  - cmd: pytest tests
-
-on_success:
-  - cmd: echo "PASSED"
-
-on_failure:
-  - cmd: echo "FAILED"
-
+#
+# on_success:
+#  - cmd: echo "PASSED"
+#
+# on_failure:
+#  - cmd: echo "FAILED"
