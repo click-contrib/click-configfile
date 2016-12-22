@@ -1,0 +1,59 @@
+# =============================================================================
+# CI-SERVER CONFIGURATION: behave
+# =============================================================================
+# OS: Windows
+# SEE ALSO:
+#   * http://www.appveyor.com/docs/build-configuration
+#   * http://www.appveyor.com/docs/installed-software#python
+#   * http://www.appveyor.com/docs/appveyor-yml
+# =============================================================================
+# https://bootstrap.pypa.io/get-pip.py
+# MAYBE: python2.6:    - choco install pip
+
+version: 0.2.1.{build}-{branch}
+# clone_folder: C:\projects\click_configfile.ci
+# clone_depth:  2
+# shallow_clone: true
+
+environment:
+  PYTHONPATH: ".;%CD%"
+  matrix:
+    - PYTHON:  C:\Python27-x64
+    - PYTHON:  C:\Python35-x64
+
+# -- TEMPORARILY DISABLED: environment matrix:
+#    - PYTHON:  C:\Python26
+#    - PYTHON:  C:\Python33
+#    - PYTHON:  C:\Python26-x64
+#    - PYTHON:  C:\Python27-x64
+#    - PYTHON:  C:\Python33-x64
+#    - PYTHON:  C:\Python34-x64
+#    - PYTHON:  C:\Python35-x64
+
+init:
+    - cmd: echo TESTING-WITH %PYTHON%
+
+# -- TEMPORARILY DISABLED: Python variants discovery
+#    - @echo INSTALLED PYTHON VERSIONS
+#    - @dir C:\Python*
+#    - path
+
+install:
+  - cmd: pip install pytest
+  - cmd: pip install .
+
+# SINCE: November 01, 2016  ==> pip on path
+# https://www.appveyor.com/updates/
+#    - cmd: %PYTHON%\\python.exe -m pip install pytest
+#    - cmd: %PYTHON%\\python.exe -m pip install .
+
+build: off
+test_script:
+  - cmd: %PYTHON%\\Scripts\\pytest.exe tests
+
+on_success:
+  - cmd: echo "PASSED"
+
+on_failure:
+  - cmd: echo "FAILED"
+
