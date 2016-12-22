@@ -10,6 +10,18 @@ from click_configfile import Param, SectionSchema, ConfigFileReader, \
     assign_param_names, matches_section
 import click
 import pytest
+import six
+
+
+# -----------------------------------------------------------------------------
+# TEST SUPPORT:
+# -----------------------------------------------------------------------------
+def posix_normpath(p):
+    if not p:
+        return p or ""
+
+    assert isinstance(p, six.string_types)
+    return p.replace("\\", "/")
 
 
 # -----------------------------------------------------------------------------
@@ -312,7 +324,7 @@ class TestCandidate3(object):
         write_configfile_with_contents(config_filename2, CONFIG_FILE_CONTENTS2)
         assert os.path.exists("hello3.ini")
         assert os.path.exists(config_filename2)
-        assert config_dirname2 in ConfigFileProcessor3.config_searchpath
+        assert posix_normpath(config_dirname2) in ConfigFileProcessor3.config_searchpath
 
         config = ConfigFileProcessor3.read_config()
         assert config == dict(name="Alice", number=2)
@@ -336,7 +348,7 @@ class TestCandidate3(object):
         write_configfile_with_contents(config_filename2, CONFIG_FILE_CONTENTS2)
         assert os.path.exists("hello3.ini")
         assert os.path.exists(config_filename2)
-        assert config_dirname2 in ConfigFileProcessor3.config_searchpath
+        assert posix_normpath(config_dirname2) in ConfigFileProcessor3.config_searchpath
 
         config = ConfigFileProcessor3.read_config()
         assert config == dict(name="Alice", number=2)
@@ -361,7 +373,7 @@ class TestCandidate3(object):
         write_configfile_with_contents(config_filename2, CONFIG_FILE_CONTENTS2)
         assert os.path.exists("hello3.ini")
         assert os.path.exists(config_filename2)
-        assert config_dirname2 in ConfigFileProcessor3.config_searchpath
+        assert posix_normpath(config_dirname2) in ConfigFileProcessor3.config_searchpath
 
         config = ConfigFileProcessor3.read_config()
         assert config == dict(name="Alice")
