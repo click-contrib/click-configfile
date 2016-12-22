@@ -382,7 +382,7 @@ class ConfigFileReader(object):
     @classmethod
     def read_config(cls):
         configfile_names = list(
-            generate_configfile_names(cls.config_files))
+            generate_configfile_names(cls.config_files, cls.config_searchpath))
         parser = configparser.ConfigParser()
         parser.optionxform = str
         parser.read(configfile_names)

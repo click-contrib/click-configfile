@@ -21,6 +21,7 @@ class ConfigSectionSchema1(object):
     @matches_section("hello")
     class Hello(SectionSchema):
         name = Param(type=str)
+        number = Param(type=int)
 
     @matches_section("hello.more.*")
     class HelloMore(SectionSchema):
@@ -65,6 +66,17 @@ class ConfigFileProcessor2(ConfigFileReader):
     config_section_schemas = [
         ConfigSectionSchema2.Hello,
         ConfigSectionSchema2.HelloMore,
+    ]
+
+
+# -----------------------------------------------------------------------------
+# TEST CANDIDATE 3: With config_searchpath
+# -----------------------------------------------------------------------------
+class ConfigFileProcessor3(ConfigFileReader):
+    config_files = ["hello3.ini"]
+    config_searchpath = [".", "config/profile"]
+    config_section_schemas = [
+        ConfigSectionSchema1.Hello,
     ]
 
 
@@ -252,7 +264,7 @@ bar.numbers: [42]
         assert result.exit_code == 0
 
 
-class TestCandidate3(object):
+class TestCandidate2B(object):
 
     def test_configfile__with_unbound_section(self, cli_runner_isolated):
         # -- DEFINITION: unbound section
@@ -279,3 +291,78 @@ class TestCandidate3(object):
 
         expected = "LookupError: No schema found for: section=unbound.section"
         assert expected in str(e)
+
+
+class TestCandidate3(object):
+
+    def test_config_searchpath__with_many_items(self, cli_runner_isolated):
+        assert not os.path.exists("hello3.ini")
+        CONFIG_FILE_CONTENTS1 = """
+            [hello]
+            name = Alice
+            """
+        CONFIG_FILE_CONTENTS2 = """
+            [hello]
+            name = Bob
+            number = 2
+            """
+        config_filename2 = os.path.join("config", "profile", "hello3.ini")
+        config_dirname2 = os.path.dirname(config_filename2)
+        write_configfile_with_contents("hello3.ini", CONFIG_FILE_CONTENTS1)
+        write_configfile_with_contents(config_filename2, CONFIG_FILE_CONTENTS2)
+        assert os.path.exists("hello3.ini")
+        assert os.path.exists(config_filename2)
+        assert config_dirname2 in ConfigFileProcessor3.config_searchpath
+
+        config = ConfigFileProcessor3.read_config()
+        assert config == dict(name="Alice", number=2)
+        assert config["name"] == "Alice"    # -- FROM: config_file1 (prefered)
+        assert config["number"] == 2        # -- FROM: config_file2
+
+
+    def test_config_searchpath__merges_sections(self, cli_runner_isolated):
+        assert not os.path.exists("hello3.ini")
+        CONFIG_FILE_CONTENTS1 = """
+            [hello]
+            name = Alice
+            """
+        CONFIG_FILE_CONTENTS2 = """
+            [hello]
+            number = 2
+            """
+        config_filename2 = os.path.join("config", "profile", "hello3.ini")
+        config_dirname2 = os.path.dirname(config_filename2)
+        write_configfile_with_contents("hello3.ini", CONFIG_FILE_CONTENTS1)
+        write_configfile_with_contents(config_filename2, CONFIG_FILE_CONTENTS2)
+        assert os.path.exists("hello3.ini")
+        assert os.path.exists(config_filename2)
+        assert config_dirname2 in ConfigFileProcessor3.config_searchpath
+
+        config = ConfigFileProcessor3.read_config()
+        assert config == dict(name="Alice", number=2)
+        assert config["name"] == "Alice"    # -- FROM: config_file1 (prefered)
+        assert config["number"] == 2        # -- FROM: config_file2
+
+
+    def test_config_searchpath__param_from_primary_file_overrides_secondary(self,
+            cli_runner_isolated):
+        assert not os.path.exists("hello3.ini")
+        CONFIG_FILE_CONTENTS1 = """
+            [hello]
+            name = Alice
+            """
+        CONFIG_FILE_CONTENTS2 = """
+            [hello]
+            name = Bob      # Will be overridden.
+            """
+        config_filename2 = os.path.join("config", "profile", "hello3.ini")
+        config_dirname2 = os.path.dirname(config_filename2)
+        write_configfile_with_contents("hello3.ini", CONFIG_FILE_CONTENTS1)
+        write_configfile_with_contents(config_filename2, CONFIG_FILE_CONTENTS2)
+        assert os.path.exists("hello3.ini")
+        assert os.path.exists(config_filename2)
+        assert config_dirname2 in ConfigFileProcessor3.config_searchpath
+
+        config = ConfigFileProcessor3.read_config()
+        assert config == dict(name="Alice")
+        assert config["name"] == "Alice"    # -- FROM: config_file1 (prefered)
