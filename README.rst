@@ -5,6 +5,10 @@ Configuration File Support for Click Commands
     :target: https://travis-ci.org/jenisys/click-configfile
     :alt: Travis CI Build Status
 
+.. image:: https://ci.appveyor.com/api/projects/status/grwpoape6f2m7ikt?svg=true
+    :target: https://ci.appveyor.com/project/jenisys/click-configfile
+    :alt: AppVeyor CI Build Status
+
 
 click_ is a Python package for creating beautiful command line interfaces
 in a composable way with as little code as necessary.
