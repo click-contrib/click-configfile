@@ -31,7 +31,7 @@ environment:
 #    - PYTHON:  C:\Python35-x64
 
 init:
-    - cmd: @echo TESTING-WITH %PYTHON%
+    - cmd: echo TESTING-WITH %PYTHON%
 
 # -- TEMPORARILY DISABLED: Python variants discovery
 #    - @echo INSTALLED PYTHON VERSIONS
@@ -54,8 +54,8 @@ test_script:
 #  - cmd: "%PYTHON%\\Scripts\\pytest.exe tests"
 
 on_success:
-  - cmd: @echo "PASSED"
+  - cmd: echo "PASSED"
 
 on_failure:
-  - cmd: @echo "FAILED"
+  - cmd: echo "FAILED"
 
