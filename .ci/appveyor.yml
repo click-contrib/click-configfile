@@ -1,5 +1,5 @@
 # =============================================================================
-# CI-SERVER CONFIGURATION: behave
+# CI-SERVER CONFIGURATION: click-configfile
 # =============================================================================
 # OS: Windows
 # SEE ALSO:
@@ -49,7 +49,9 @@ install:
 
 build: off
 test_script:
-  - cmd: %PYTHON%\\Scripts\\pytest.exe tests
+  - cmd: pytest tests
+
+#  - cmd: "%PYTHON%\\Scripts\\pytest.exe tests"
 
 on_success:
   - cmd: echo "PASSED"
