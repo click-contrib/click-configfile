@@ -87,7 +87,7 @@ def make_long_description(marker=None, intro=None):
 # ----------------------------------------------------------------------------
 # PROJECT CONFIGURATION (for sdist/setup mostly):
 # ----------------------------------------------------------------------------
-package_version = "0.3.0a0"
+package_version = "0.2.1"
 description = """\
 This package extends the `click <https://click.pocoo.org/>`_ functionality
 by adding support for commands that use configuration files."""
@@ -105,22 +105,6 @@ if SETUP_DEBUG:
     print(long_description)
 
 
-CLASSIFIERS = """\
-License :: OSI Approved :: BSD License
-Development Status :: 3 - Alpha
-Environment :: Console
-Intended Audience :: Developers
-Intended Audience :: End Users/Desktop
-Intended Audience :: System Administrators
-Natural Language :: English
-Programming Language :: Python
-Programming Language :: Python :: 2
-Programming Language :: Python :: 2.6
-Programming Language :: Python :: 2.7
-Programming Language :: Python :: 3
-Topic :: Utilities
-"""
-
 # -----------------------------------------------------------------------------
 # SETUP:
 # -----------------------------------------------------------------------------
@@ -136,7 +120,6 @@ setup(
     long_description = long_description,
     keywords   = "click, configfile, configparser",
     platforms  = [ 'any' ],
-    classifiers= CLASSIFIERS.splitlines(),
     # packages = find_packages_by_root_package("click_configfile"),
     py_modules = ["click_configfile"],
     install_requires=install_requires,
@@ -152,4 +135,19 @@ setup(
         ':python_version=="3.4"': before_py35_extra,
     },
     zip_safe=True,
+    classifiers=[
+        "License :: OSI Approved :: BSD License",
+        "Development Status :: 3 - Alpha",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "Intended Audience :: End Users/Desktop",
+        "Intended Audience :: System Administrators",
+        "Natural Language :: English",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Topic :: Utilities",
+    ],
 )
