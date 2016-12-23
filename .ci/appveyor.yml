@@ -6,6 +6,10 @@
 #   * http://www.appveyor.com/docs/build-configuration
 #   * http://www.appveyor.com/docs/installed-software#python
 #   * http://www.appveyor.com/docs/appveyor-yml
+#
+# RELATED:
+#   * https://packaging.python.org/appveyor/
+#   * https://github.com/ogrisel/python-appveyor-demo
 # =============================================================================
 # https://bootstrap.pypa.io/get-pip.py
 # MAYBE: python2.6:    - choco install pip

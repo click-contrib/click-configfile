@@ -179,11 +179,13 @@ class Param(object):
     """
     # pylint: disable=redefined-builtin
 
-    def __init__(self, name=None, type=None, multiple=None, default=None):
+    def __init__(self, name=None, type=None, multiple=None, default=None,
+                 help=None):
         self.name = name
         self.type = convert_type(type, default)
         self.multiple = multiple
         self.default = default
+        self.help = help
 
     def parse(self, text):
         if self.multiple:
