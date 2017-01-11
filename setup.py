@@ -111,7 +111,7 @@ if SETUP_DEBUG:
 setup(
     name="click-configfile",
     version=package_version,
-    url="https://github.com/jenisys/click-configfile",
+    url="https://github.com/click-contrib/click-configfile",
     download_url="https://pypi.python.org/pypi/click-configfile/%s" % package_version,
     author="Jens Engel",
     author_email="jenisys@noreply.github.com",

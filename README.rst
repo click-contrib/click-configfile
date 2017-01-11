@@ -1,8 +1,8 @@
 Configuration File Support for Click Commands
 ===============================================================================
 
-.. image:: https://img.shields.io/travis/jenisys/click-configfile/master.svg
-    :target: https://travis-ci.org/jenisys/click-configfile
+.. image:: https://img.shields.io/travis/click-contrib/click-configfile/master.svg
+    :target: https://travis-ci.org/click-contrib/click-configfile
     :alt: Travis CI Build Status
 
 .. image:: https://ci.appveyor.com/api/projects/status/grwpoape6f2m7ikt?svg=true
