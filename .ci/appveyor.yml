@@ -14,7 +14,7 @@
 # https://bootstrap.pypa.io/get-pip.py
 # MAYBE: python2.6:    - choco install pip
 
-version: 0.2.2.{build}-{branch}
+version: 0.2.3.{build}-{branch}
 # clone_folder: C:\projects\click_configfile.ci
 # clone_depth:  2
 # shallow_clone: true

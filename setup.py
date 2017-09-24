@@ -87,7 +87,7 @@ def make_long_description(marker=None, intro=None):
 # ----------------------------------------------------------------------------
 # PROJECT CONFIGURATION (for sdist/setup mostly):
 # ----------------------------------------------------------------------------
-package_version = "0.2.2"
+package_version = "0.2.3"
 description = """\
 This package extends the `click <https://click.pocoo.org/>`_ functionality
 by adding support for commands that use configuration files."""
