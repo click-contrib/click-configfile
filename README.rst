@@ -227,6 +227,8 @@ By default the first schema listed in config_section_schemas is treated as the p
 
 If you want to merge multiple schemas into the top level of default_map, you add them to the config_section_primary_schemas list. Understand that this will combine the namespaces, so there may be conflicts depending on usage. The advantage of this is having the precedence listed above for any listed schema. As an example:
 
+.. code-block:: python
+
     class ConfigFileProcessor(ConfigFileReader):
         config_files = ["foo.ini", "foo.cfg"]
         config_section_primary_schemas = [
