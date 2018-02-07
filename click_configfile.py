@@ -472,7 +472,8 @@ class ConfigFileReader(object):
         :return: EMPTY-STRING or None, indicates MERGE-WITH-DEFAULTS.
         :return: NON-EMPTY-STRING, for key in default_map to use.
         """
-        sections_to_merge = cls.collect_config_sections_from_schemas(cls.config_section_schemas_to_merge_with_primary)
+        sections_to_merge = cls.collect_config_sections_from_schemas(
+            cls.config_section_schemas_to_merge_with_primary)
         if cls.config_sections and cls.config_sections[0] == section_name:
             # -- PRIMARY-SECTION: Merge into storage (default_map).
             return ""
