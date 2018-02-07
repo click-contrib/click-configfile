@@ -93,7 +93,7 @@ class ConfigFileProcessor3(ConfigFileReader):
 
 
 # -----------------------------------------------------------------------------
-# TEST CANDIDATE 4: With config_section_schemas_to_merge_with_primary
+# TEST CANDIDATE 4: With config_section_primary_schemas
 # -----------------------------------------------------------------------------
 @assign_param_names
 class ConfigSectionSchema4(object):
@@ -108,12 +108,12 @@ class ConfigSectionSchema4(object):
 
 class ConfigFileProcessor4(ConfigFileReader):
     config_files = ["hello4.ini"]
-    config_section_schemas_to_merge_with_primary = [
+    config_section_primary_schemas = [
         ConfigSectionSchema4.HelloMore,
     ]
     config_section_schemas = [
         ConfigSectionSchema4.Hello,
-    ] + config_section_schemas_to_merge_with_primary
+    ] + config_section_primary_schemas
 
 
 # -----------------------------------------------------------------------------
@@ -405,8 +405,8 @@ class TestCandidate3(object):
 
 class TestCandidate4(object):
 
-    def test_configfile__use_default_section_to_storage_name_mapping(self,
-                                                               cli_runner_isolated):
+    def test_configfile__use_config_section_primary_schemas(self,
+                                                            cli_runner_isolated):
         assert ConfigFileProcessor4.config_files[0] == "hello4.ini"
         assert not os.path.exists("hello4.cfg")
         CONFIG_FILE_CONTENTS = """
