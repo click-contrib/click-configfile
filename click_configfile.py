@@ -378,7 +378,7 @@ class ConfigFileReader(object):
     config_section_schemas = []     # Config section schema description.
     config_sections = []            # OPTIONAL: Config sections of interest.
     config_searchpath = ["."]       # OPTIONAL: Where to look for config files.
-    config_section_schemas_to_merge_with_primary = [] # OPTIONAL: Schemas to merge into primary.
+    config_section_primary_schemas = [] # OPTIONAL: Schemas to merge into primary.
 
     # -- GENERIC PART:
     # Uses declarative specification from above (config_files, config_sections, ...)
@@ -473,7 +473,7 @@ class ConfigFileReader(object):
         :return: NON-EMPTY-STRING, for key in default_map to use.
         """
         sections_to_merge = cls.collect_config_sections_from_schemas(
-            cls.config_section_schemas_to_merge_with_primary)
+            cls.config_section_primary_schemas)
         if cls.config_sections and cls.config_sections[0] == section_name:
             # -- PRIMARY-SECTION: Merge into storage (default_map).
             return ""

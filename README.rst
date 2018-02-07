@@ -222,3 +222,17 @@ The resulting source code is:
                 continue
             person_data = ctx.default_map[person_data_key]
             process_person_data(person_data)    # as dict.
+
+By default the first schema listed in config_section_schemas is treated as the primary, meaning that its keys / values are merged into the top level of the default_map. This can be useful since there is then an order of precedence of variables loaded into the click command in different ways. This order is CLI > Configuration file > Environment > Default. Other schemas (not the primary), are added as a dictionary to the default_map where the key is the section name and the value is a dictionary of the keys / values in that section. These can be used manually as in the example above.
+
+If you want to merge multiple schemas into the top level of default_map, you add them to the config_section_primary_schemas list. Understand that this will combine the namespaces, so there may be conflicts depending on usage. The advantage of this is having the precedence listed above for any listed schema. As an example:
+
+    class ConfigFileProcessor(ConfigFileReader):
+        config_files = ["foo.ini", "foo.cfg"]
+        config_section_primary_schemas = [
+            ConfigSectionSchema.Foo,
+            ConfigSectionSchema.Bar,
+        ]
+        config_section_schemas = config_section_primary_schemas + [
+            ConfigSectionSchema.Baz,
+        ]
