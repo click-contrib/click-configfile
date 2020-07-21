@@ -44,6 +44,12 @@ The command implementation reads the configuraion file(s) by using the
 ``ConfigFileProcessor.read_config()`` method and stores it in the
 ``default_map`` of the ``context_settings``.
 
+If you need to refine the behaviour of the underlying ConfigParser then pass
+named arguments to ``read_config``, these will be passed on to the
+ConfigParser constructor. e.g.
+
+``ConfigFileProcessor.read_config(interpolation=ExtendedInterpolation())``
+
 That is only the first part of the problem. We have now a solution that allows
 us to read configuration files (and override the command options defaults)
 before the command-line parsing begins.

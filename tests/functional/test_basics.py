@@ -378,3 +378,32 @@ class TestCandidate3(object):
         config = ConfigFileProcessor3.read_config()
         assert config == dict(name="Alice")
         assert config["name"] == "Alice"    # -- FROM: config_file1 (prefered)
+
+    # an example of passing extra parameters to the underlying ConfigParser
+    def test_inline_comments(self, cli_runner_isolated):
+        assert ConfigFileProcessor1.config_files[0] == "hello.ini"
+        CONFIG_FILE_CONTENTS1 = """
+            [default]
+            dummy = nothing
+            ; this is a comment
+            [hello]
+            name = Alice ; this is an inline comment
+            """
+        write_configfile_with_contents("hello.ini", CONFIG_FILE_CONTENTS1)
+        assert os.path.exists("hello.ini")
+        assert not os.path.exists("hello.cfg")
+
+        CONTEXT_SETTINGS = dict(
+            default_map=ConfigFileProcessor1.read_config(
+                    inline_comment_prefixes=[";", "#"]
+                )
+            )
+
+        @click.command(context_settings=CONTEXT_SETTINGS)
+        @click.pass_context
+        def hello(ctx):
+            click.echo("Hello %s" % ctx.default_map["name"])
+
+        result = cli_runner_isolated.invoke(hello, [])
+        assert result.output == "Hello Alice\n"
+        assert result.exit_code == 0

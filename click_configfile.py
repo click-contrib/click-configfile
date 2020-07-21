@@ -382,10 +382,10 @@ class ConfigFileReader(object):
     # -- GENERIC PART:
     # Uses declarative specification from above (config_files, config_sections, ...)
     @classmethod
-    def read_config(cls):
+    def read_config(cls, **args):
         configfile_names = list(
             generate_configfile_names(cls.config_files, cls.config_searchpath))
-        parser = configparser.ConfigParser()
+        parser = configparser.ConfigParser(**args)
         parser.optionxform = str
         parser.read(configfile_names)
 
