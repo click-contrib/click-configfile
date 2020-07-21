@@ -162,5 +162,5 @@ class TestDecorators(object):
             class Hello(SectionSchema):
                 pass
 
-        expected = "ValueError: %r (expected: string, strings)" % bad_section_name
+        expected = "%r (expected: string, strings)" % bad_section_name
         assert expected in str(e)
