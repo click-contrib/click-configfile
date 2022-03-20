@@ -301,8 +301,11 @@ class TestCandidate2B(object):
             # -- POINT: CONTEXT_SETTINGS = dict(default_map=...)
             ConfigFileProcessorWithUnboundSection.read_config()
 
-        expected = "LookupError: No schema found for: section=unbound.section"
-        assert expected in str(e)
+
+        error_message = str(e)
+        expected = "No schema found for: section=unbound.section"
+        assert expected in error_message
+        assert "LookupError" in error_message
 
 
 class TestCandidate3(object):
