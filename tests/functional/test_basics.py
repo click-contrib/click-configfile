@@ -93,6 +93,30 @@ class ConfigFileProcessor3(ConfigFileReader):
 
 
 # -----------------------------------------------------------------------------
+# TEST CANDIDATE 4: With config_section_primary_schemas
+# -----------------------------------------------------------------------------
+@assign_param_names
+class ConfigSectionSchema4(object):
+
+    @matches_section("hello4")
+    class Hello(SectionSchema):
+        first_name = Param(type=str)
+
+    @matches_section("hellomore4")
+    class HelloMore(SectionSchema):
+        last_name = Param(type=str)
+
+class ConfigFileProcessor4(ConfigFileReader):
+    config_files = ["hello4.ini"]
+    config_section_primary_schemas = [
+        ConfigSectionSchema4.HelloMore,
+    ]
+    config_section_schemas = [
+        ConfigSectionSchema4.Hello,
+    ] + config_section_primary_schemas
+
+
+# -----------------------------------------------------------------------------
 # TEST SUITE
 # -----------------------------------------------------------------------------
 xfail = pytest.mark.xfail
@@ -381,3 +405,38 @@ class TestCandidate3(object):
         config = ConfigFileProcessor3.read_config()
         assert config == dict(name="Alice")
         assert config["name"] == "Alice"    # -- FROM: config_file1 (prefered)
+
+class TestCandidate4(object):
+
+    def test_configfile__use_config_section_primary_schemas(self,
+                                                            cli_runner_isolated):
+        assert ConfigFileProcessor4.config_files[0] == "hello4.ini"
+        assert not os.path.exists("hello4.cfg")
+        CONFIG_FILE_CONTENTS = """
+                [hello4]
+                first_name = Alice
+
+                [hellomore4]
+                last_name = Doe
+                """
+        write_configfile_with_contents("hello4.ini", CONFIG_FILE_CONTENTS)
+        assert os.path.exists("hello4.ini")
+
+        CONTEXT_SETTINGS = dict(default_map=ConfigFileProcessor4.read_config())
+
+        @click.command(context_settings=CONTEXT_SETTINGS)
+        @click.option("-n", "--first-name", default="__CMDLINE__")
+        @click.option("-n", "--last-name", default="__CMDLINE__")
+        @click.pass_context
+        def hello4(ctx, first_name, last_name):
+            click.echo("Hello4 first_name = %s" % first_name)
+            click.echo("Hello4 last_name = %s" % last_name)
+
+        assert os.path.exists("hello4.ini")
+        result = cli_runner_isolated.invoke(hello4)
+        expected_output = """\
+Hello4 first_name = Alice
+Hello4 last_name = Doe
+"""
+        assert result.output == expected_output
+        assert result.exit_code == 0
