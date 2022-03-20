@@ -19,7 +19,7 @@ import six
 # -----------------------------------------------------------------------------
 # PACKAGE META DATA:
 # -----------------------------------------------------------------------------
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 __author__ = "Jens Engel"
 __license__ = "BSD"
 
@@ -300,6 +300,8 @@ def generate_configfile_names(config_files, config_searchpath=None):
     for config_path in reversed(config_searchpath):
         for config_basename in reversed(config_files):
             config_fname = os.path.join(config_path, config_basename)
+            config_fname = os.path.expanduser(config_fname)
+            config_fname = os.path.expanduser(config_fname)
             if os.path.isfile(config_fname):
                 # MAYBE: yield os.path.normpath(config_fname)
                 yield config_fname

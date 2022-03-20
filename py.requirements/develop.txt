@@ -1,7 +1,7 @@
 # ============================================================================
 # PYTHON PACKAGE: DEVELOPMENT REQUIREMENTS
 # ============================================================================
-# REQUIRES: Python >= 2.6
+# REQUIRES: Python >= 2.7
 # DESCRIPTION:
 #    pip install -r <THIS_FILE>
 #
@@ -12,21 +12,27 @@
 # ============================================================================
 # INDIRECTLY: virtualenv >= 1.10
 
-# -- BUILD SUPPORT:
-invoke  >= 0.14.0
-bumpversion >= 0.4.0
+# -- BUILD-SYSTEM: invoke
+-r ../tasks/py.requirements.txt
+
+# -- PROJECT ADMIN SUPPORT:
+# OLD: bumpversion
+bump2version >= 0.5.6
 
 # -- PACKAGE RELEASE MANAGEMENT:
 twine
 
 # -- TEST/DEVELOP SUPPORT:
+tox >= 1.8
+coverage>=4.2
 -r testing.txt
 
 # -- DOCUMENTATION:
-Sphinx >= 1.5
+# NOT_NEEDED_YET: Sphinx >= 1.5
 
 # -- STATIC CODE ANALYSIS:
 pylint
 
 # -- py2/py3 support:
 modernize >= 0.5
+

@@ -6,7 +6,7 @@ USAGE:
     python setup.py install
 """
 
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 import sys
 import os.path
 
@@ -17,7 +17,7 @@ sys.path.insert(0, HERE)
 
 from setuptools import find_packages, setup
 import inspect
-# MAYBE: from setuptools_behave import behave_test
+
 
 # -----------------------------------------------------------------------------
 # UTILITY:
@@ -87,17 +87,6 @@ def make_long_description(marker=None, intro=None):
 # ----------------------------------------------------------------------------
 # PROJECT CONFIGURATION (for sdist/setup mostly):
 # ----------------------------------------------------------------------------
-package_version = "0.2.3"
-description = """\
-This package extends the `click <https://click.pocoo.org/>`_ functionality
-by adding support for commands that use configuration files."""
-
-install_requires = ["click >= 6.6", "six >= 1.10"]
-before_py35_extra = []
-if sys.version < "3.5":
-    install_requires.append("configparser >= 3.5.0")
-    before_py35_extra.append("configparser >= 3.5.0")
-
 EXAMPLE_MARKER = "# MARKER-EXAMPLE:"
 long_description = make_long_description(EXAMPLE_MARKER)
 SETUP_DEBUG = os.environ.get("SETUP_DEBUG", "no") in ("yes", "true", "on")
@@ -110,9 +99,9 @@ if SETUP_DEBUG:
 # -----------------------------------------------------------------------------
 setup(
     name="click-configfile",
-    version=package_version,
+    version="0.2.4",
     url="https://github.com/click-contrib/click-configfile",
-    download_url="https://pypi.python.org/pypi/click-configfile/%s" % package_version,
+    download_url="https://pypi.org/project/click-configfile/",
     author="Jens Engel",
     author_email="jenisys@noreply.github.com",
     license="BSD",
@@ -120,24 +109,32 @@ setup(
     long_description = long_description,
     keywords   = "click, configfile, configparser",
     platforms  = [ 'any' ],
-    # packages = find_packages_by_root_package("click_configfile"),
     py_modules = ["click_configfile"],
-    install_requires=install_requires,
-    # BAD: setup_requires=["pytest-runner"],
-    tests_require=["pytest >= 3.0", "pytest-runner"],
+    # NOT_NEEDED: packages = find_packages_by_root_package("click_configfile"),
+    # -- REQUIREMENTS:
+    python_requires=">=2.7, !=3.0.*, !=3.1.*",
+    install_requires=[
+        "click >= 6.6",
+        "six >= 1.10",
+        "configparser >= 3.5.0; python_version < '3.5'",
+    ],
+    tests_require=[
+        "pytest <  5.0; python_version <  '3.0'", # >= 4.2
+        "pytest >= 5.0; python_version >= '3.0'",
+        "pytest-html >= 1.19.0",
+    ],
+#     extras_require={
+#         # -- SUPPORT-WHEELS: Extra packages for Python2.6 and ...
+#         # SEE: https://bitbucket.org/pypa/wheel/ , CHANGES.txt (v0.24.0)
+#         ':python_version=="2.7"': "configparser >= 3.5.0; python_version < '3.5'",
+#         ':python_version=="3.3"': "configparser >= 3.5.0; python_version < '3.5'",
+#         ':python_version=="3.4"': "configparser >= 3.5.0; python_version < '3.5'",
+#     },
     include_package_data=True,
-    extras_require={
-        # -- SUPPORT-WHEELS: Extra packages for Python2.6 and ...
-        # SEE: https://bitbucket.org/pypa/wheel/ , CHANGES.txt (v0.24.0)
-        ':python_version=="2.6"': before_py35_extra,
-        ':python_version=="2.7"': before_py35_extra,
-        ':python_version=="3.3"': before_py35_extra,
-        ':python_version=="3.4"': before_py35_extra,
-    },
     zip_safe=True,
     classifiers=[
         "License :: OSI Approved :: BSD License",
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "Intended Audience :: End Users/Desktop",
@@ -145,7 +142,6 @@ setup(
         "Natural Language :: English",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Topic :: Utilities",
