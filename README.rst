@@ -1,13 +1,21 @@
 Configuration File Support for Click Commands
 ===============================================================================
 
-.. image:: https://img.shields.io/travis/click-contrib/click-configfile/master.svg
-    :target: https://travis-ci.org/click-contrib/click-configfile
-    :alt: Travis CI Build Status
+.. image:: https://github.com/click-contrib/click-configfile/actions/workflows/test.yml/badge.svg
+    :target: https://github.com/click-contrib/click-configfile/actions/workflows/test.yml
+    :alt: CI Build Status
 
-.. image:: https://ci.appveyor.com/api/projects/status/grwpoape6f2m7ikt?svg=true
-    :target: https://ci.appveyor.com/project/jenisys/click-configfile
-    :alt: AppVeyor CI Build Status
+.. image:: https://img.shields.io/pypi/v/click-configfile.svg
+    :target: https://pypi.org/project/click-configfile
+    :alt: Latest Version
+
+.. image:: https://img.shields.io/pypi/dm/click-configfile.svg
+    :target: https://pypi.org/project/click-configfile
+    :alt: Downloads
+
+.. image:: https://img.shields.io/pypi/l/click-configfile.svg
+    :target: https://pypi.org/project/click-configfile/
+    :alt: License
 
 
 click_ is a Python package for creating beautiful command line interfaces
