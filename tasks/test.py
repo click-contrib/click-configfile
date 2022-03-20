@@ -9,7 +9,7 @@ import os.path
 import sys
 
 # -- TASK-LIBRARY:
-from .clean import cleanup_tasks, cleanup_dirs, cleanup_files
+from .invoke_cleanup import cleanup_tasks, cleanup_dirs, cleanup_files
 
 
 # ---------------------------------------------------------------------------

@@ -4,14 +4,15 @@ Provides tasks to build documentation with sphinx, etc.
 """
 
 from __future__ import absolute_import, print_function
+import os.path
+import sys
 from invoke import task, Collection
 from invoke.util import cd
 from path import Path
-import os.path
-import sys
 
 # -- TASK-LIBRARY:
-from .clean import cleanup_tasks, cleanup_dirs
+from .invoke_cleanup import cleanup_tasks, cleanup_dirs
+
 
 # -----------------------------------------------------------------------------
 # TASKS:

@@ -14,7 +14,7 @@ import sys
 HERE = os.path.dirname(__file__)
 TASKS_VENDOR_DIR = os.path.join(HERE, "_vendor")
 INVOKE_BUNDLE = os.path.join(TASKS_VENDOR_DIR, "invoke.zip")
-INVOKE_BUNDLE_VERSION = "0.13.0"
+INVOKE_BUNDLE_VERSION = "1.2.0"
 
 DEBUG_SYSPATH = False
 
@@ -24,6 +24,7 @@ DEBUG_SYSPATH = False
 # -----------------------------------------------------------------------------
 class VersionRequirementError(SystemExit): pass
 
+
 # -----------------------------------------------------------------------------
 # FUNCTIONS:
 # -----------------------------------------------------------------------------
@@ -31,7 +32,7 @@ def setup_path(invoke_minversion=None):
     """Setup python search and add ``TASKS_VENDOR_DIR`` (if available)."""
     # print("INVOKE.tasks: setup_path")
     if not os.path.isdir(TASKS_VENDOR_DIR):
-        print("SKIP: TASKS_VENDOR_DIR=%s is missing" % TASKS_VENDOR_DIR)
+        # DIAG: print("SKIP: TASKS_VENDOR_DIR=%s is missing" % TASKS_VENDOR_DIR)
         return
     elif os.path.abspath(TASKS_VENDOR_DIR) in sys.path:
         # -- SETUP ALREADY DONE:

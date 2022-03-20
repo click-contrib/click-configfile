@@ -27,7 +27,7 @@ _setup.require_invoke_minversion(INVOKE_MINVERSION)
 from invoke import Collection
 
 # -- TASK-LIBRARY:
-from . import clean
+from . import invoke_cleanup as cleanup
 from . import docs
 from . import test
 
@@ -41,11 +41,10 @@ from . import test
 # TASK CONFIGURATION:
 # -----------------------------------------------------------------------------
 namespace = Collection()
-namespace.add_task(clean.clean)
-namespace.add_task(clean.clean_all)
+namespace.add_collection(Collection.from_module(cleanup), name="cleanup")
 namespace.add_collection(Collection.from_module(docs))
 namespace.add_collection(Collection.from_module(test))
 
 # -- INJECT: clean configuration into this namespace
-namespace.configure(clean.namespace.configuration())
+namespace.configure(cleanup.namespace.configuration())
 

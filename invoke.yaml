@@ -2,7 +2,7 @@
 # INVOKE CONFIGURATION:
 # =====================================================
 # -- ON WINDOWS:
-# run:  
+# run:
 #   pty: false
 #   shell: C:\Windows\System32\cmd.exe
 # =====================================================
@@ -11,7 +11,18 @@ run:
     echo: true
     pty: true
 
-clean_all:
+cleanup_all:
     extra_directories:
       - .eggs
+      - .pytest_cache
+      - .tox
+      - ".venv*"
+      - __pypackages__
+      - "*.egg-info"
+      - build
+      - dist
       - tmp
+    extra_files:
+      - ".done.*"
+      - "*.lock"
+      - "*.log"
