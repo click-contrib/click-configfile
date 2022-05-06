@@ -42,7 +42,7 @@ def build(ctx, builder="html", options=""):
 
 @task
 def linkcheck(ctx):
-    """Check if all links are corect."""
+    """Check if all links are correct."""
     build(ctx, builder="linkcheck")
 
 @task

@@ -283,7 +283,7 @@ def generate_configfile_names(config_files, config_searchpath=None):
     .. sourcecode::
 
         # -- ALGORITHM:
-        #    First basenames/directories are prefered and override other files.
+        #    First basenames/directories are preferred and override other files.
         for config_path in reversed(config_searchpath):
             for config_basename in reversed(config_files):
                 config_fname = os.path.join(config_path, config_basename)

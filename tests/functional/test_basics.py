@@ -331,7 +331,7 @@ class TestCandidate3(object):
 
         config = ConfigFileProcessor3.read_config()
         assert config == dict(name="Alice", number=2)
-        assert config["name"] == "Alice"    # -- FROM: config_file1 (prefered)
+        assert config["name"] == "Alice"    # -- FROM: config_file1 (preferred)
         assert config["number"] == 2        # -- FROM: config_file2
 
 
@@ -355,7 +355,7 @@ class TestCandidate3(object):
 
         config = ConfigFileProcessor3.read_config()
         assert config == dict(name="Alice", number=2)
-        assert config["name"] == "Alice"    # -- FROM: config_file1 (prefered)
+        assert config["name"] == "Alice"    # -- FROM: config_file1 (preferred)
         assert config["number"] == 2        # -- FROM: config_file2
 
 
@@ -380,4 +380,4 @@ class TestCandidate3(object):
 
         config = ConfigFileProcessor3.read_config()
         assert config == dict(name="Alice")
-        assert config["name"] == "Alice"    # -- FROM: config_file1 (prefered)
+        assert config["name"] == "Alice"    # -- FROM: config_file1 (preferred)

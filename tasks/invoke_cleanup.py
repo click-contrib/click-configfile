@@ -106,7 +106,7 @@ def execute_cleanup_tasks(ctx, cleanup_tasks, workdir=".", verbose=False):
                 failure_count += 1
 
     if failure_count:
-        print("CLEANUP TASKS: %d failure(s) occured" % failure_count)
+        print("CLEANUP TASKS: %d failure(s) occurred" % failure_count)
 
 
 def make_excluded(excluded, config_dir=None, workdir=None):
@@ -259,7 +259,7 @@ def path_glob(pattern, current_dir=None):
     # except OSError as e:
     #     # -- CORNER-CASE 1: x.glob(pattern) may fail with:
     #     # OSError: [Errno 13] Permission denied: <filename>
-    #     # HINT: Directory lacks excutable permissions for traversal.
+    #     # HINT: Directory lacks executable permissions for traversal.
     #     # -- CORNER-CASE 2: symlinked endless loop
     #     # OSError: [Errno 62] Too many levels of symbolic links: <filename>
     #     print("{0}: {1}".format(e.__class__.__name__, e))
