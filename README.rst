@@ -48,7 +48,7 @@ EXAMPLE:
     if __name__ == "__main__":
         command_with_config()
 
-The command implementation reads the configuraion file(s) by using the
+The command implementation reads the configuration file(s) by using the
 ``ConfigFileProcessor.read_config()`` method and stores it in the
 ``default_map`` of the ``context_settings``.
 
@@ -64,7 +64,7 @@ code snippet:
 .. code-block:: python
 
     # -- FILE: example_command_with_configfile.py (PART 2)
-    # Description of sections in a confguration file: *.ini
+    # Description of sections in a configuration file: *.ini
     from click_configfile import matches_section, Param, SectionSchema
 
     class ConfigSectionSchema(object):
@@ -112,7 +112,7 @@ An example for a valid configuration file with this schema is:
     birthyear = 2001
 
 
-The following code snippet shows the remaing core implementation of reading
+The following code snippet shows the remaining core implementation of reading
 the configuration file (and parsing the configuration file data):
 
 .. code-block:: python

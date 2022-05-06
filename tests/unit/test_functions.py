@@ -28,7 +28,7 @@ class TestFunction(object):
         assert os.path.exists("hello.ini")
         assert os.path.exists("hello.cfg")
 
-        # -- PERFROM TEST:
+        # -- PERFORM TEST:
         given_config_files = ["hello.ini", "hello.cfg"]
         actual_config_files = list(generate_configfile_names(given_config_files))
         expected_config_files = [
@@ -50,7 +50,7 @@ class TestFunction(object):
         assert os.path.exists("more/hello.ini")
         assert os.path.exists("more/hello.cfg")
 
-        # -- PERFROM TEST:
+        # -- PERFORM TEST:
         given_config_files = ["hello.ini", "hello.cfg"]
         config_searchpath = [".", "more"]
         actual_config_files = list(generate_configfile_names(given_config_files,
@@ -70,7 +70,7 @@ class TestFunction(object):
         assert os.path.exists("hello.ini")
         assert os.path.exists("hello.cfg")
 
-        # -- PERFROM TEST:
+        # -- PERFORM TEST:
         given_config_files = ["hello.ini", "hello.cfg"]
         actual_config_files = list(generate_configfile_names(given_config_files))
         expected_config_files = [
@@ -84,7 +84,7 @@ class TestFunction(object):
         assert not os.path.exists("hello.ini")
         assert not os.path.exists("hello.cfg")
 
-        # -- PERFROM TEST:
+        # -- PERFORM TEST:
         given_config_files = ["hello.ini", "hello.cfg"]
         actual_config_files = list(generate_configfile_names(given_config_files))
         assert actual_config_files == []
@@ -97,7 +97,7 @@ class TestFunction(object):
         assert os.path.exists("hello.ini")
         assert os.path.exists("BAD_PART")
 
-        # -- PERFROM TEST:
+        # -- PERFORM TEST:
         given_config_files = ["hello.ini", "hello.cfg"]
         config_searchpath = [".", "BAD_PART"]
         actual_config_files = list(generate_configfile_names(given_config_files,
