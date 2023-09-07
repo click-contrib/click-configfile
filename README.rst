@@ -35,6 +35,7 @@ EXAMPLE:
     # BASIC SOLUTION FOR: Command that uses one or more configuration files.
     import click
 
+    ... # Some details are left out here (see below).
     CONTEXT_SETTINGS = dict(default_map=ConfigFileProcessor.read_config())
 
     @click.command(context_settings=CONTEXT_SETTINGS)
