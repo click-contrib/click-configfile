@@ -7,7 +7,7 @@
 # ============================================================================
 
 click >= 6.6
-six >= 1.12
+six >= 1.15
 
 # -- USE BACKPORT: For Python2 and some Python3
 # IMPROVED: configparser from Python 3.5

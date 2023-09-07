@@ -115,13 +115,14 @@ setup(
     python_requires=">=2.7, !=3.0.*, !=3.1.*",
     install_requires=[
         "click >= 6.6",
-        "six >= 1.10",
+        "six >= 1.15",
         "configparser >= 3.5.0; python_version < '3.5'",
     ],
     tests_require=[
         "pytest <  5.0; python_version <  '3.0'", # >= 4.2
         "pytest >= 5.0; python_version >= '3.0'",
-        "pytest-html >= 1.19.0",
+        "pytest-html >= 1.19.0,<2.0; python_version <  '3.0'",
+        "pytest-html >= 2.0,<4.0;    python_version >= '3.0'",
     ],
 #     extras_require={
 #         # -- SUPPORT-WHEELS: Extra packages for Python2.6 and ...
