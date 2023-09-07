@@ -11,7 +11,7 @@ from invoke.util import cd
 from path import Path
 
 # -- TASK-LIBRARY:
-from .invoke_cleanup import cleanup_tasks, cleanup_dirs
+from invoke_cleanup import cleanup_tasks, cleanup_dirs
 
 
 # -----------------------------------------------------------------------------

@@ -27,7 +27,7 @@ _setup.require_invoke_minversion(INVOKE_MINVERSION)
 from invoke import Collection
 
 # -- TASK-LIBRARY:
-from . import invoke_cleanup as cleanup
+import invoke_cleanup as cleanup
 from . import docs
 from . import test
 
