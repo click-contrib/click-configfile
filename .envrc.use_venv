@@ -1,10 +1,14 @@
 # ===========================================================================
-# PROJECT ENVIRONMENT SETUP: tag-expressions/python/.envrc.use_venv
+# PROJECT ENVIRONMENT SETUP: .envrc.use_venv
 # ===========================================================================
 # DESCRIPTION:
 #   Setup and use a Python virtual environment (venv).
 #   On entering the directory: Creates and activates a venv for a python version.
 #   On leaving  the directory: Deactivates the venv (virtual environment).
+#
+# ENABLE/DISABLE THIS OPTIONAL PART:
+#   * TO ENABLE:  Rename ".envrc.use_venv.disabled" to ".envrc.use_venv"
+#   * TO DISABLE: Rename ".envrc.use_venv" to ".envrc.use_venv.disabled"
 #
 # SEE ALSO:
 #   * https://direnv.net/

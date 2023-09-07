@@ -7,22 +7,24 @@
 #   shell: C:\Windows\System32\cmd.exe
 # =====================================================
 
+---
 run:
-    echo: true
-    pty: true
+  echo: true
+  pty: true
 
 cleanup_all:
-    extra_directories:
-      - .eggs
-      - .pytest_cache
-      - .tox
-      - ".venv*"
-      - __pypackages__
-      - "*.egg-info"
-      - build
-      - dist
-      - tmp
-    extra_files:
-      - ".done.*"
-      - "*.lock"
-      - "*.log"
+  extra_directories:
+    - .eggs
+    - .pytest_cache
+    - .direnv
+    - .tox
+    - ".venv*"
+    - __pypackages__
+    - "*.egg-info"
+    - build
+    - dist
+    - tmp
+  extra_files:
+    - ".done.*"
+    - "*.lock"
+    - "*.log"

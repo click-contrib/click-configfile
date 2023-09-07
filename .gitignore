@@ -10,6 +10,7 @@
 .coverage.*
 .done.*
 
+.direnv/
 .eggs/
 .idea/
 .pytest_cache/
